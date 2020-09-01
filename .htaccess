@@ -1,0 +1,6 @@
+Options All -Indexes
+
+# Options +FollowSymLinks
+# RewriteEngine on
+# RewriteCond %{REQUEST_URI} !\.(jpg|css|js|gif|png|eot|svg|ttf|woff|woff2|php)$ [NC]
+# RewriteRule ^(\**\.*) public/index.php [QSA]
