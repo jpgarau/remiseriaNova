@@ -6,7 +6,7 @@
     <div class="collapse navbar-collapse" id="navbarGestion">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item">
-                <a class="nav-link" href="">Consola Movil</a>
+                <a class="nav-link" href="" id="consolaMovil">Consola Movil</a>
             </li>
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" id="menuDrop" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -34,8 +34,17 @@
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0" method="post">
-            <p class="mr-sm-2 my-auto text-white font-weight-bold" style="font-family: 'Play', sans-serif;"><i class="fas fa-user"></i> <?php echo $_SESSION['usuario']; ?></p>
-            <button class="btn btn-info btn-sm my-2 my-sm-0" name="cerrars" id="cerrars" title="Cerrar Session"><i class="fas fa-door-open"></i></button>
+            <li class="nav-item dropdown list-group">
+                <a href="#" class="nav-link dropdown-toggle text-white font-weight-bold" id="menuUsuario" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user"></i> <?php echo $_SESSION['usuario']; ?>
+                </a>
+                <div class="dropdown-menu dropdown-menu-left dropdown-menu-sm-right" aria-labelledby="menuUsuario">
+                <a class="dropdown-item" href="" id="cambioPass"><i class="fas fa-key"></i> Cambiar Contraseña</a>
+                <a class="dropdown-item" href="" id="config"><i class="fas fa-cogs"></i> Configuración</a>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" href="" name="cerrars" id="cerrars"><i class="fas fa-door-open"></i> Cerrar Session</button>
+                </div>
+            </li>
         </form>
     </div>
 </nav>

@@ -1,5 +1,9 @@
-body{
+body, html{
+    height: 100%;
     line-height: 1em;
+}
+#contenedor, #contenedor2{
+    height: 100%;
 }
 
 .site-login {
@@ -34,46 +38,32 @@ a.btn-menu:hover{
     padding: 1em;
 }
 
-/* .container{
-    max-width: 1200px;
-} */
-
-.site-viaje {
-    background: url(../img/fondo-mapa.jpg);
-    /*linear-gradient(90deg, rgba(255,147,0,1) 0%, rgba(255,207,0,1) 50%),*/
+#pantallaMovil {
+    height: 100%;
+    background: url(../img/fondoMapaToay.jpg);
+    background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    max-height: 100vh;
-    color:#000;
+    position: relative;
 }
 
-.btnlibre {
-    background-color:green;
-    color:#FFF;
-    font-weight: 700;
-    padding:.5em 4em;
+#pantallaMovil button{
+    font-size: 16px;
 }
 
-.marco-viaje {
-    max-width: 500px;
-    margin: auto;
-    padding: 1em;
-}
-
-.texto-direccion {
-    background-color: #FFF;
-    border: 1px darkolivegreen solid;
+@media only screen and (min-width:768px){
+    #pantallaMovil{
+    background: url(../img/fondoMapaToay2.jpg);
+    }
+    #pantallaMovil button{
+        font-size: 1rem;
+    }
 }
 
 .menu-principal{
-    height:100vh;
     background-image: url('../img/fondo8.jpg'); 
-    background-repeat: no-repeat; 
-    background-size: cover;
-}
-.abmchofer{
     height:100vh;
-    background-image: url('../img/fondo.jpg'); 
+    background-position: center;
     background-repeat: no-repeat; 
     background-size: cover;
 }
@@ -165,4 +155,58 @@ div#choferes_viajes .table-responsive{
 div#det_ctacte .table-responsive{
     min-height: 65vh;
     max-height: 65vh;
+}
+
+
+ /* The side navigation menu */
+ .sidenav {
+     margin-top: 49px;
+    height: 0; /* 100% Full-height */
+    width: 100%; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 100; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: #343a40; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    /* padding-top: 60px;  */
+    /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a , .sidenav span{
+    /* padding-top: 50%;  */
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover, .sidenav span:hover {
+    color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+    position: absolute;
+    right: 50%;
+    bottom: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#downNav{
+    transition: 0.5s ease-in-out all;
+    -moz-transition: all ease-in-out 0.5s;
+}
+
+#downNav:hover{
+    cursor: pointer;
+    font-size: 20px;
+    transition: 0.5s ease-in-out all;
+    -moz-transition: all ease-in-out 0.5s;
 }

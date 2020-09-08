@@ -10,6 +10,9 @@ if(!PRODUCCION) {
     ini_set('display_errors', '0');
 }
 
-ini_set("include_path", __DIR__);
+const DB_HOST = "localhost";
+const DB_USER = "root";
+const DB_PASS = "";
+const DB_NAME = "remiseria";
 
-?>
+ini_set("include_path", __DIR__);

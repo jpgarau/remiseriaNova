@@ -414,4 +414,27 @@ class Viaje
         }
         return $arr;
     }
+
+    public function buscarDestino($idChofer){
+        $arr = array('exito'=>false, 'msg'=>'Error al buscar destino');
+        try {
+            $sql = 'SELECT viajes.origen FROM viajes LEFT JOIN servicio on viajes.idServicio=servicio.idServicio WHERE servicio.idChofer=? AND viajes.importe IS NULL AND viajes.estado=1 AND servicio.estado=1';
+            $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
+            $stmt = $mysqli->prepare($sql);
+            if($stmt!==FALSE){
+                $stmt->bind_param('i',$idChofer);
+                $stmt->execute();
+                $rs = $stmt->get_result();
+                $respuesta = $rs->fetch_assoc();
+                $encontrado = $rs->num_rows;
+                $stmt->close();
+                $mysqli->close();
+                $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrado, $respuesta);
+            }
+        } catch (Exception $e) {
+            $arr['msg'] = $e->getMessage();
+        }
+        return $arr;
+    }
 }

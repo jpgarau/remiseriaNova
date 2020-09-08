@@ -1,5 +1,6 @@
 var timerAlarma = 15;
 $(function () {
+	$("#downNav").on("click", openNav);
 	$("#calendario").datepicker({
 		autoSize: true,
 		dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
@@ -202,12 +203,8 @@ $(function () {
 					$("#modal_nuevo_viaje .modal-body #horaLibre").val(viaje.horaLibre);
 					$("#modal_nuevo_viaje .modal-body #importe").val(viaje.importe);
 					$("#modal_nuevo_viaje .modal-body #observa").val(viaje.observa);
-					$("#modal_nuevo_viaje .modal-body .cmbCliente").val(
-						viaje.idCliente
-					);
-					$("#modal_nuevo_viaje .modal-body #idViaje").val(
-						viaje.idViaje
-					);
+					$("#modal_nuevo_viaje .modal-body .cmbCliente").val(viaje.idCliente);
+					$("#modal_nuevo_viaje .modal-body #idViaje").val(viaje.idViaje);
 					$("#modal_nuevo_viaje").modal("show");
 				} else {
 					console.log(response.msg);
@@ -300,7 +297,32 @@ $(function () {
 		);
 	});
 
-	$("#btn-informe-turno").on('click',function(){imprimirInforme()});
+	$("#btn-informe-turno").on("click", function () {
+		imprimirInforme();
+	});
+
+	$("#tabla_base tbody").on("dblclick", "tr", function () {
+		let idServicio = $(this.childNodes[2].childNodes[0]).val();
+		$("#menu-servicios li a").removeClass("active");
+		$("#menu-servicios li a#" + idServicio).addClass("active");
+		ObtenerViajes(idServicio);
+		closeNav();
+	});
+	$("#tabla_toay tbody").on("dblclick", "tr", function () {
+		let idServicio = $(this.childNodes[2].childNodes[0]).val();
+		$("#menu-servicios li a").removeClass("active");
+		$("#menu-servicios li a#" + idServicio).addClass("active");
+		ObtenerViajes(idServicio);
+		closeNav();
+	});
+
+	$("#tabla_sRosa tbody").on("dblclick", "tr", function () {
+		let idServicio = $(this.childNodes[2].childNodes[0]).val();
+		$("#menu-servicios li a").removeClass("active");
+		$("#menu-servicios li a#" + idServicio).addClass("active");
+		ObtenerViajes(idServicio);
+		closeNav();
+	});
 });
 
 // FUNCIONES DE RESERVA
@@ -470,7 +492,7 @@ function asignarReserva(idReserva, idServicio) {
 					getFechaHora($("#calendario").datepicker("getDate")).fecha
 				);
 				asignarViaje(response[0], idServicio);
-				alertify.success("Viaje asignado")
+				alertify.success("Viaje asignado");
 			} else {
 				response.msg;
 			}
@@ -552,7 +574,9 @@ function llenarTablaViajes(viajes) {
 	viajes.forEach((viaje) => {
 		total += viaje.importe == null ? 0 : parseFloat(viaje.importe);
 		$("#tabla_viajes tbody").append(
-			"<tr"+(viaje.idCliente!==0?" class='bg-success'":"")+">" +
+			"<tr" +
+				(viaje.idCliente !== 0 ? " class='bg-success'" : "") +
+				">" +
 				"<td>" +
 				viaje.hora +
 				"</td>" +
@@ -602,6 +626,7 @@ function asignarViaje(oReserva, idServicio) {
 		success: function (response) {
 			if (response.exito) {
 				ObtenerViajes(idServicio);
+				quitarPila(idServicio);
 			} else {
 				console.log(response.msg);
 			}
@@ -642,6 +667,7 @@ function nuevoViaje(
 		success: function (response) {
 			if (response.exito) {
 				ObtenerViajes(idServicio);
+				quitarPila(idServicio);
 			} else {
 				console.log(response.msg);
 			}
@@ -652,7 +678,8 @@ function nuevoViaje(
 	});
 }
 
-function actualizarViaje(idViaje,
+function actualizarViaje(
+	idViaje,
 	idCliente,
 	fecha,
 	hora,
@@ -666,7 +693,9 @@ function actualizarViaje(idViaje,
 	$.ajax({
 		type: "POST",
 		url: "scripts/apiviajes.php",
-		data:{param:6,idViaje: idViaje,
+		data: {
+			param: 6,
+			idViaje: idViaje,
 			idCliente: idCliente,
 			fecha: fecha,
 			hora: hora,
@@ -674,22 +703,23 @@ function actualizarViaje(idViaje,
 			destino: destino,
 			horaLibre: horaLibre,
 			importe: importe,
-			observa: observa},
+			observa: observa,
+		},
 		dataType: "json",
-		success: function (response){
-			if(response.exito){
+		success: function (response) {
+			if (response.exito) {
 				ObtenerViajes(idServicio);
-			}else{
+			} else {
 				console.log(response.msg);
 			}
 		},
-		error: function(response){
+		error: function (response) {
 			console.log(response);
-		}
+		},
 	});
 }
 
-function cancelarViaje(idViaje){
+function cancelarViaje(idViaje) {
 	$.ajax({
 		type: "POST",
 		url: "scripts/apiviajes.php",
@@ -711,13 +741,15 @@ function cancelarViaje(idViaje){
 	});
 }
 
-
-function imprimirInforme(){
+function imprimirInforme() {
 	let servicio = $("#menu-servicios li a.active");
 	let idServicio = servicio[0].id;
 	let textoServicio = servicio.text();
-	let movil = textoServicio.split(" ",1);
-	let chofer = textoServicio.substring(movil.length+2,textoServicio.length-1);
+	let movil = textoServicio.split(" ", 1);
+	let chofer = textoServicio.substring(
+		movil.length + 2,
+		textoServicio.length - 1
+	);
 	let fecha = getFechaHora();
 	$.ajax({
 		type: "POST",
@@ -726,7 +758,7 @@ function imprimirInforme(){
 		dataType: "json",
 		success: function (response) {
 			if (response.exito) {
-				generarInformePDF(response[0],movil, chofer, fecha);
+				generarInformePDF(response[0], movil, chofer, fecha);
 			} else {
 				console.log(response.msg);
 			}
@@ -737,80 +769,81 @@ function imprimirInforme(){
 	});
 }
 
-function generarInformePDF(servicios, movil, chofer, fecha){
-	let total = 0.00,
-		ctaCte = 0.00,
-		recaudado = 0.00,
+function generarInformePDF(servicios, movil, chofer, fecha) {
+	let total = 0.0,
+		ctaCte = 0.0,
+		recaudado = 0.0,
 		viajes = 0;
-	var informe = new jsPDF( {orientation: 'p',
-	unit: 'mm',
-	format: 'a4'});
-	
+	var informe = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
+
 	informe.setFontSize(10);
-	informe.text(160, 5, "Fecha: "+fecha.fecha2);
-	
+	informe.text(160, 5, "Fecha: " + fecha.fecha2);
+
 	informe.setFontSize(18);
 	informe.text(80, 10, "REMISERIA NOVA");
 
 	informe.setFontSize(14);
-	informe.setFontType('bold');
+	informe.setFontType("bold");
 	informe.text(75, 20, "INFORME DE TURNO");
 
 	informe.setFontSize(10);
-	informe.text(20,30, "Movil: "+movil);
-	informe.text(40,30, "Chofer: "+chofer);
+	informe.text(20, 30, "Movil: " + movil);
+	informe.text(40, 30, "Chofer: " + chofer);
 
-	informe.roundedRect(10,35,190,7,1,1);
+	informe.roundedRect(10, 35, 190, 7, 1, 1);
 
-	informe.text(12,40, "Salió");
-	informe.text(23,40, "Libre");
-	informe.text(35,40, "Origen");
-	informe.text(92,40, "Destino");
-	informe.text(148,40, "CC");
-	informe.text(163,40, "Importe");
-	informe.text(190,40, "Total");
+	informe.text(12, 40, "Salió");
+	informe.text(23, 40, "Libre");
+	informe.text(35, 40, "Origen");
+	informe.text(92, 40, "Destino");
+	informe.text(148, 40, "CC");
+	informe.text(163, 40, "Importe");
+	informe.text(190, 40, "Total");
 
-	informe.setFontType('normal');
-	let linea=46;
+	informe.setFontType("normal");
+	let linea = 46;
 
-	servicios.forEach((servicio)=>{
-		if(servicio.idCliente>0){
-			ctaCte += servicio.importe==null?0.00:parseFloat(servicio.importe);
-			informe.text(148,linea,"CC");
+	servicios.forEach((servicio) => {
+		if (servicio.idCliente > 0) {
+			ctaCte += servicio.importe == null ? 0.0 : parseFloat(servicio.importe);
+			informe.text(148, linea, "CC");
 		}
-		total += servicio.importe==null?0.00:parseFloat(servicio.importe);
-		informe.text(12,linea, servicio.hora.substring(0,5));
-		informe.text(23,linea, servicio.hora.substring(0,5));
-		let origen = informe.splitTextToSize(servicio.origen,55);
-		let destino = informe.splitTextToSize(servicio.destino==null?"":servicio.destino,55);
-		informe.text(35,linea, origen[0]);
-		informe.text(92,linea, destino[0]);
+		total += servicio.importe == null ? 0.0 : parseFloat(servicio.importe);
+		informe.text(12, linea, servicio.hora.substring(0, 5));
+		informe.text(23, linea, servicio.hora.substring(0, 5));
+		let origen = informe.splitTextToSize(servicio.origen, 55);
+		let destino = informe.splitTextToSize(
+			servicio.destino == null ? "" : servicio.destino,
+			55
+		);
+		informe.text(35, linea, origen[0]);
+		informe.text(92, linea, destino[0]);
 
-		let importe = servicio.importe==null?"0.00":servicio.importe.toString();
-		informe.text(176,linea, "$ "+importe,"right");
-		informe.text(199,linea, "$ "+total.toFixed(2).toString(),"right");
+		let importe =
+			servicio.importe == null ? "0.00" : servicio.importe.toString();
+		informe.text(176, linea, "$ " + importe, "right");
+		informe.text(199, linea, "$ " + total.toFixed(2).toString(), "right");
 		viajes++;
-		if(linea>285){
+		if (linea > 285) {
 			informe.addPage();
-			linea=10;
+			linea = 10;
 		}
-		linea+=5;
+		linea += 5;
 	});
 
-	recaudado = total-ctaCte,
-	informe.roundedRect(140,linea,60,17,1,1);
-	linea+=5;
-	informe.text(142,linea, "Recaudado:");
-	informe.text(199,linea, "$ "+recaudado.toFixed(2).toString(),"right");
-	linea+=5;
-	informe.text(142,linea, "Cuenta Corriente:");
-	informe.text(199,linea, "$ "+ctaCte.toFixed(2).toString(),"right");
-	linea+=5;
-	informe.setFontType('bold');
-	informe.text(142,linea, "Totales: "+viajes.toString()+" (viaje/s)");
+	(recaudado = total - ctaCte), informe.roundedRect(140, linea, 60, 17, 1, 1);
+	linea += 5;
+	informe.text(142, linea, "Recaudado:");
+	informe.text(199, linea, "$ " + recaudado.toFixed(2).toString(), "right");
+	linea += 5;
+	informe.text(142, linea, "Cuenta Corriente:");
+	informe.text(199, linea, "$ " + ctaCte.toFixed(2).toString(), "right");
+	linea += 5;
+	informe.setFontType("bold");
+	informe.text(142, linea, "Totales: " + viajes.toString() + " (viaje/s)");
 	// informe.text(162,linea, viajes.toString()+" (viaje/s)");
-	informe.text(199,linea, "$ "+total.toFixed(2).toString(),"right");
-	informe.save(fecha.fecha+' -'+' turno movil '+movil+'.pdf');
+	informe.text(199, linea, "$ " + total.toFixed(2).toString(), "right");
+	informe.save(fecha.fecha + " -" + " turno movil " + movil + ".pdf");
 }
 
 //FUNCIONES GENERALES
@@ -840,7 +873,9 @@ function llenarSelectClientes(clientes) {
 		$("<option>" + "Seleccionar Cliente" + "</option>").val(0)
 	);
 	clientes.forEach((cliente) => {
-		$(".cmbCliente").append($("<option>" + cliente.ayn + "</option>").val(cliente.idClientes));
+		$(".cmbCliente").append(
+			$("<option>" + cliente.ayn + "</option>").val(cliente.idClientes)
+		);
 	});
 }
 
@@ -919,23 +954,21 @@ function actualizarFecha() {
 			getFechaHora(fecha).fecha ===
 			getFechaHora($("#calendario").datepicker("getDate")).fecha
 		) {
-			
-			if(segundos==0){
+			if (segundos == 0) {
 				verificarAlarma();
 			}
 		}
-		
 	} else {
 		clearInterval(relojConsola);
 	}
 }
 
-function verificarAlarma(){
+function verificarAlarma() {
 	let horaAhora = new Date();
 	if (
 		getFechaHora(horaAhora).fecha ===
 		getFechaHora($("#calendario").datepicker("getDate")).fecha
-	){
+	) {
 		let trs = $("#tabla_reservas tbody tr");
 		let alarma;
 		if (trs.length !== 0) {
@@ -943,25 +976,29 @@ function verificarAlarma(){
 			for (let i = 0; i < trLength; i++) {
 				let trHoraReserva = trs[i].childNodes[4].innerText;
 				let fechaHoraReserva = new Date();
-				fechaHoraReserva.setHours(trHoraReserva.split(":")[0],trHoraReserva.split(":")[1],00);
-				if (horaAhora<=fechaHoraReserva){
-					let difmin = Math.round((fechaHoraReserva-horaAhora)/1000/60);
-					if(difmin<=(timerAlarma/4)){
+				fechaHoraReserva.setHours(
+					trHoraReserva.split(":")[0],
+					trHoraReserva.split(":")[1],
+					00
+				);
+				if (horaAhora <= fechaHoraReserva) {
+					let difmin = Math.round((fechaHoraReserva - horaAhora) / 1000 / 60);
+					if (difmin <= timerAlarma / 4) {
 						$(trs[i]).removeClass("table-danger table-warning");
 						$(trs[i]).addClass("bg-danger");
 						alarma = new Audio("media/alarma3.mp3");
 						alarma.play();
-					}else if(difmin<=(timerAlarma/2)){
+					} else if (difmin <= timerAlarma / 2) {
 						$(trs[i]).removeClass("table-warning");
 						$(trs[i]).addClass("table-danger");
 						alarma = new Audio("media/alarma2.mp3");
 						alarma.play();
-					}else if(difmin<=timerAlarma){
+					} else if (difmin <= timerAlarma) {
 						$(trs[i]).addClass("table-warning");
 						alarma = new Audio("media/alarma1.mp3");
 						alarma.play();
-					} 
-				}else{
+					}
+				} else {
 					$(trs[i]).addClass("bg-danger");
 				}
 			}
@@ -1051,4 +1088,121 @@ function validarHora(fecha, hora) {
 		}
 	}
 	return 0;
+}
+
+function openNav() {
+	$("#tabla_base tbody").html("");
+	$("#tabla_toay tbody").html("");
+	$("#tabla_sRosa tbody").html("");
+	$.ajax({
+		type: "POST",
+		url: "scripts/apipila.php",
+		data: { param: 1 },
+		dataType: "json",
+		success: function (response) {
+			if (response.exito) {
+				if (response.encontrados > 0) {
+					let ordenBase = 1,
+						ordenToay = 1,
+						ordenSRosa = 1;
+					response[0].forEach((servicio) => {
+						if (servicio.pila === 1) {
+							$("#tabla_base tbody").append(
+								"<tr>" +
+									"<td>" +
+									ordenBase +
+									"</td>" +
+									"<td>" +
+									servicio.idVehiculo +
+									" (" +
+									servicio.ayn +
+									")" +
+									"</td>" +
+									"<td>" +
+									"<input type='hidden' value='" +
+									servicio.idServicio +
+									"'>" +
+									"</td>" +
+									"</tr>"
+							);
+							ordenBase++;
+						} else if (servicio.pila === 2) {
+							$("#tabla_toay tbody").append(
+								"<tr>" +
+									"<td>" +
+									ordenToay +
+									"</td>" +
+									"<td>" +
+									servicio.idVehiculo +
+									" (" +
+									servicio.ayn +
+									")" +
+									"</td>" +
+									"<td>" +
+									"<input type='hidden' value='" +
+									servicio.idServicio +
+									"'>" +
+									"</td>" +
+									"</tr>"
+							);
+							ordenToay++;
+						} else if (servicio.pila === 3) {
+							$("#tabla_sRosa tbody").append(
+								"<tr>" +
+									"<td>" +
+									ordenSRosa +
+									"</td>" +
+									"<td>" +
+									servicio.idVehiculo +
+									" (" +
+									servicio.ayn +
+									")" +
+									"</td>" +
+									"<td>" +
+									"<input type='hidden' value='" +
+									servicio.idServicio +
+									"'>" +
+									"</td>" +
+									"</tr>"
+							);
+							ordenSRosa++;
+						}
+					});
+					document.getElementById("mySidenav").style.height = "250px";
+					document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+				} else {
+					alertify.error("No se encontraron resultados para mostrar");
+				}
+			} else {
+				console.log(response.msg);
+			}
+		},
+		error: function (response) {
+			console.log(response);
+		},
+	});
+}
+
+function closeNav() {
+	document.getElementById("mySidenav").style.height = "0";
+	document.body.style.backgroundColor = "white";
+}
+
+function quitarPila(idServicio) {
+	$.ajax({
+		type: "POST",
+		url: "scripts/apipila.php",
+		data: { param: 2, idServicio },
+		dataType: "json",
+		success: function (response) {
+			if (response.exito) {
+				console.log(response);
+			} else {
+				console.error(response.msg);
+			}
+		},
+		error: function (response) {
+			console.error(response);
+		},
+	});
 }

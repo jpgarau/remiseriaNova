@@ -228,28 +228,39 @@ class Usuario{
         }
     }
     public function verificarUsuario($user,$pass){
+        $arr = array('exito'=>false, 'msg'=>'Error al verificar');
         try {
             $error = false;
-            $sql = "SELECT nombre, apellido, usuario, clave FROM usuarios WHERE usuario=?";
-            $mysqli = Conexion::abrir();
-            $mysqli->set_charset('utf8');
-            $stmt = $mysqli->prepare($sql);
-            if($stmt!==FALSE){
-                $stmt->bind_param('s',$user);
-                $stmt->execute();
-                $rs = $stmt->get_result();
-                $stmt->close();
-                while($fila=$rs->fetch_array()){
-                    $error = password_verify($pass,$fila[3]);
-                    if ($error){
-                        $error = strtoupper($fila[1]).', '.$fila[0];
+            $user = trim($user);
+            $user = filter_var($user, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            if($user===FALSE || is_null($user) || strlen($user)===0) $error = true;
+            $pass = trim($pass);
+            $pass = filter_var($pass, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            if($pass===FALSE || is_null($pass) || strlen($pass)===0 || $error===true ) $error = true;
+            if(!$error){
+                $sql = "SELECT nombre, apellido, usuario, clave, perfilid, idChofer FROM usuarios WHERE usuario=? AND estado BETWEEN 0 AND 90";
+                $mysqli = Conexion::abrir();
+                $mysqli->set_charset('utf8');
+                $stmt = $mysqli->prepare($sql);
+                if($stmt!==FALSE){
+                    $stmt->bind_param('s',$user);
+                    $stmt->execute();
+                    $rs = $stmt->get_result();
+                    $stmt->close();
+                    $arr=array('exito'=>true, 'msg'=>'','encontrado'=>false);
+                    while($fila=$rs->fetch_array(MYSQLI_ASSOC)){
+                        $error = password_verify($pass,$fila['clave']);
+                        if ($error){
+                            unset($fila['clave']); 
+                            $arr=array('exito'=>true, 'msg'=>'','encontrado'=>true,$fila);
                         break;
+                        }
                     }
                 }
             }
         } catch (Exception $e) {
-            $error = $e; //->getMessage();
+            $arr['msg'] = $e->getMessage(); //->getMessage();
         }
-        return $error;
+        return $arr;
     }
 }    

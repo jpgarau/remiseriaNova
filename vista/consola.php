@@ -1,3 +1,41 @@
+<div class="sidenav" id="mySidenav">
+    <span class="closebtn" onclick="closeNav()">&times;</span>
+    <div class="row align-items-top h-75">
+        <div class="col text-center">
+            <table id="tabla_base" class="table table-light table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th colspan="3">BASE</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="col text-center">
+        <table id="tabla_toay" class="table table-light table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th colspan="3">TOAY</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="col text-center">
+        <table id="tabla_sRosa" class="table table-light table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th colspan="3">SANTA ROSA</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="d-flex justify-content-center">
+    <p id="downNav" class="text-center m-0 bg-dark px-5 text-white rounded-bottom"><i class="fas fa-chevron-down"></i></p>
+</div>
 <div id="consola" style="height: 93vh;">
     <div class="row m-0 p-0 h-50 overflow-hidden">
         <div id="calendar" class="col-3">

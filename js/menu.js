@@ -2,6 +2,15 @@ $(document).ready(function () {
 	if(typeof relojConsola !== 'undefined'){
 		clearInterval(relojConsola)};
 
+	$("#consolaMovil").click(function (e) {
+		e.preventDefault();
+		if(typeof relojConsola !== 'undefined'){
+			clearInterval(relojConsola)};
+		$("#contenedor").removeClass("menu-principal");
+		$("#navbarGestion a").removeClass("active");
+		$(this).addClass("active");
+		$("#contenedor2").load("vista/consolaMovil.php");
+	});
 	$("#vehiculos").click(function (e) {
 		e.preventDefault();
 		if(typeof relojConsola !== 'undefined'){
@@ -9,7 +18,7 @@ $(document).ready(function () {
 		$("#contenedor").removeClass("menu-principal");
 		$("#navbarGestion a").removeClass("active");
 		$(this).addClass("active");
-		$("#contenedor").load("vista/vehiculos.php");
+		$("#contenedor2").load("vista/vehiculos.php");
 	});
 	$("#propietarios").click(function (e) {
 		e.preventDefault();
@@ -18,7 +27,7 @@ $(document).ready(function () {
 		$("#contenedor").removeClass("menu-principal");
 		$("#navbarGestion a").removeClass("active");
 		$(this).addClass("active");
-		$("#contenedor").load("vista/propietarios.php", (res, status, xhr)=>{
+		$("#contenedor2").load("vista/propietarios.php", (res, status, xhr)=>{
 			if(status==='error'){
 				function redirigir(){
 					window.location.replace("http://localhost/remiseria");
@@ -35,7 +44,7 @@ $(document).ready(function () {
 		$("#contenedor").removeClass("menu-principal");
 		$("#navbarGestion a").removeClass("active");
 		$(this).addClass("active");
-		$("#contenedor").load("vista/clientes.php");
+		$("#contenedor2").load("vista/clientes.php");
 	});
 	$("#choferes").click(function (e) {
 		e.preventDefault();
@@ -44,7 +53,7 @@ $(document).ready(function () {
 		$("#contenedor").removeClass("menu-principal");
 		$("#navbarGestion a").removeClass("active");
 		$(this).addClass("active");
-		$("#contenedor").load("vista/choferes.php");
+		$("#contenedor2").load("vista/choferes.php");
 	});
 	$("#informes").click(function (e) {
 		e.preventDefault();
@@ -53,7 +62,7 @@ $(document).ready(function () {
 		$("#contenedor").removeClass("menu-principal");
 		$("#navbarGestion a").removeClass("active");
 		$(this).addClass("active");
-		$("#contenedor").load("vista/informes.php");
+		$("#contenedor2").load("vista/informes.php");
 	});
 	$("#consola").click(function (e) {
 		if(screen.width>1280){
@@ -61,7 +70,7 @@ $(document).ready(function () {
 			$("#contenedor").removeClass("menu-principal");
 			$("#navbarGestion a").removeClass("active");
 			$(this).addClass("active");
-			$("#contenedor").load("vista/consola.php");
+			$("#contenedor2").load("vista/consola.php");
 		}
 	});
 	$("#servicios").click(function (e) {
@@ -71,7 +80,7 @@ $(document).ready(function () {
 		$("#contenedor").removeClass("menu-principal");
 		$("#navbarGestion a").removeClass("active");
 		$(this).addClass("active");
-		$("#contenedor").load("vista/servicios.php");
+		$("#contenedor2").load("vista/servicios.php");
 	});
 	$("#ctacte").click(function (e) {
 		e.preventDefault();
@@ -80,6 +89,6 @@ $(document).ready(function () {
 		$("#contenedor").removeClass("menu-principal");
 		$("#navbarGestion a").removeClass("active");
 		$(this).addClass("active");
-		$("#contenedor").load("vista/ctacte.php");
+		$("#contenedor2").load("vista/ctacte.php");
 	});
 });

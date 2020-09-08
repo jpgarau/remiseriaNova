@@ -152,4 +152,31 @@ class Servicio{
         }
         return $arr;
     }
+    public function buscarServicioPorChofer(){
+        $arr = array('exito'=>false, 'msg'=>'Error al buscar');
+        try {
+            $idChofer = $this->getIdChofer();
+            $sql = 'SELECT idServicio FROM servicios WHERE idChofer=? AND estado=1';
+            $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
+            $stmt = $mysqli->prepare($sql);
+            if($stmt!==FALSE){
+                $stmt->bind_param('i',$idChofer);
+                $stmt->execute();
+                $rs = $stmt->get_result();
+                $encontrados = $rs->num_rows;
+                $stmt->close();
+                if($encontrados>0){
+                    $respuesta = $rs->fetch_assoc();
+                    $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrados, $respuesta);
+                }else{
+                    $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrados);
+                }
+                $mysqli->close();
+            }
+        } catch (Exception $e) {
+            $arr['msg'] = $e->getMessage();
+        }
+        return $arr;
+    }
 }

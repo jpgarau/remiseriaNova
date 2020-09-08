@@ -122,6 +122,10 @@ switch ($tarea) {
         $oviaje = new Viaje;
         $retorno = $oviaje->informeViajes($idVehiculos, $fecha, $fechaHasta, $idChofer);
         break;
+    case 8:
+        $oviaje = new Viaje;
+        $retorno = $oviaje->buscarDestino($idChofer);
+        break;
     default:
         break;
 }

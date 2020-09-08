@@ -60,6 +60,11 @@ switch ($tarea) {
         $oservicio->setIdServicio($idServicio);
         $retorno = $oservicio->terminarServicio();
         break;
+    case 4:
+        $oservicio = new Servicio;
+        $oservicio->setIdChofer($idChofer);
+        $retorno = buscarServicioPorChofer();
+        break;
     default:
         break;
 }
