@@ -37,6 +37,15 @@ switch ($tarea) {
         $opila->setIdServicio($idServicio);
         $retorno = $opila->eliminar();
         break;
+    case 3:
+        $opila = new Pila();
+        $opila->setIdServicio($idServicio);
+        $retorno = $opila->eliminar();
+        if($retorno["exito"]){
+            $opila->setPila($pila);
+            $retorno = $opila->agregar();
+        }
+        break;
     default:
         break;
 }

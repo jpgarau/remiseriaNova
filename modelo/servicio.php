@@ -156,7 +156,7 @@ class Servicio{
         $arr = array('exito'=>false, 'msg'=>'Error al buscar');
         try {
             $idChofer = $this->getIdChofer();
-            $sql = 'SELECT idServicio FROM servicios WHERE idChofer=? AND estado=1';
+            $sql = 'SELECT idServicio FROM servicio WHERE idChofer=? AND estado=1';
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);

@@ -1,20 +1,21 @@
 var idServicio;
+var locaciones = {1:'Base',2:'Toay', 3:'Santa Rosa'};
 $(function () {
     establecerServicio();
     $("#actualizarDestino").on("click", function(){
         actualizarDestino();
     });
     $("#libre_base").on("click", function(){
-        libreBase();
+        libre(1);
     });
     $("#libre_toay").on("click", function(){
-        console.log("libre en Toay");
+        libre(2);
     });
     $("#libre_sRosa").on("click", function(){
-        console.log("libre en Santa Rosa");
+        libre(3);
     });
     $("#fuera_servicio").on("click", function(){
-        console.log("Fuera de Servicio");
+        fueraServicio();
     });
 });
 
@@ -50,23 +51,34 @@ function actualizarDestino(){
     });
 }
 
-function libreBase(){
+function libre(pila){
     $.ajax({
         type:"POST",
         url:"scripts/apipila.php",
-        data:{param:3, idServicio},
+        data:{param:3, idServicio, pila},
         dataType: 'json',
         success: function(response){
             if(response.exito){
-                if(response.encontrados>0){
-                    $("#origenMovil").html("");
-                    $("#origenMovil").removeClass("text-info");
-                    $("#origenMovil").append(response[0].origen);
-                }else{
-                    $("#origenMovil").html("");
-                    $("#origenMovil").removeClass("text-info");
-                    $("#origenMovil").append("No hay viajes disponibles");
-                }
+                alertify.success('Libre en ' + locaciones[pila]);
+            }else{
+                console.error(response.msg);
+            }
+        },
+        error: function(response){
+            console.error(response);
+        }
+    });
+}
+
+function fueraServicio(){
+    $.ajax({
+        type:"POST",
+        url:"scripts/apipila.php",
+        data:{param:2, idServicio},
+        dataType: 'json',
+        success: function(response){
+            if(response.exito){
+                alertify.warning('Fuera de Servicio');
             }else{
                 console.error(response.msg);
             }
@@ -82,11 +94,15 @@ function establecerServicio() {
     $.ajax({
         type:"POST",
         url:"scripts/apiservicios.php",
-        data:{},
+        data:{param:4, idChofer},
         dataType: "json",
         success: function(response){
             if(response.exito){
-
+                if(response.encontrados>0){
+                    idServicio = response[0].idServicio;
+                }else{
+                    alertify.error("No se encontro servicio Activo");
+                }
             }else{
                 console.error(response.msg);
             }

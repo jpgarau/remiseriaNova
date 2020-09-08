@@ -63,7 +63,7 @@ switch ($tarea) {
     case 4:
         $oservicio = new Servicio;
         $oservicio->setIdChofer($idChofer);
-        $retorno = buscarServicioPorChofer();
+        $retorno = $oservicio->buscarServicioPorChofer();
         break;
     default:
         break;
