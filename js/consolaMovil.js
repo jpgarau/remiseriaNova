@@ -1,22 +1,32 @@
-var idServicio;
+var idServicio = 0;
 var locaciones = {1:'Base',2:'Toay', 3:'Santa Rosa'};
 $(function () {
     establecerServicio();
+
     $("#actualizarDestino").on("click", function(){
         actualizarDestino();
     });
     $("#libre_base").on("click", function(){
+        $(".btn").removeClass("active");
+        $(this).addClass("active");
         libre(1);
     });
     $("#libre_toay").on("click", function(){
+        $(".btn").removeClass("active");
+        $(this).addClass("active");
         libre(2);
     });
     $("#libre_sRosa").on("click", function(){
+        $(".btn").removeClass("active");
+        $(this).addClass("active");
         libre(3);
     });
     $("#fuera_servicio").on("click", function(){
+        $(".btn").removeClass("active");
+        $(this).addClass("active");
         fueraServicio();
     });
+
 });
 
 
@@ -36,6 +46,7 @@ function actualizarDestino(){
                     $("#origenMovil").html("");
                     $("#origenMovil").removeClass("text-info");
                     $("#origenMovil").append(response[0].origen);
+                    $(".btn").removeClass("active");
                 }else{
                     $("#origenMovil").html("");
                     $("#origenMovil").removeClass("text-info");
@@ -102,6 +113,13 @@ function establecerServicio() {
                     idServicio = response[0].idServicio;
                 }else{
                     alertify.error("No se encontro servicio Activo");
+                    $("#actualizarDestino").prop("disabled", true);
+                    $("#libre_base").prop("disabled", true);
+                    $("#libre_toay").prop("disabled", true);
+                    $("#libre_sRosa").prop("disabled", true);
+                    $("#fuera_servicio").prop("disabled", true);
+                    $("#errorServicio").removeClass("d-none");
+
                 }
             }else{
                 console.error(response.msg);

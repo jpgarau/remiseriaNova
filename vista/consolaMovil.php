@@ -4,6 +4,9 @@
 
 <div  class="container" id="pantallaMovil">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+        <div id="errorServicio" class="col d-none mb-2">
+            <div class='alert alert-danger mb-0 h5'>No hay ningún servicio activo. Verifique con la Base.</div>
+        </div>
         <div class="col"> 
             <div class="bg-info pt-3 px-1">
                 <p class="text-center mb-2 h5 text-white">Proximo Destino</p>
