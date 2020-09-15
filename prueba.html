@@ -3,33 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba</title>
+    <title>Document</title>
 </head>
 <body>
-    <div id="respuesta">
-
-    </div>
-
-<script>
-    sessionStorage.setItem("miToken","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c");
-    let url = "prueba.php";
-    let token = sessionStorage.getItem('miToken');
-    let h = new Headers();
-    h.append('Authentication', 'Bearer ${token}')
-    let req = new Request(url,{
-        method: 'POST',
-        mode: 'cors'
-    });
-
-    fetch(req)
-        .then(resp => resp.text())
-        .then(data => {
-            console.log(data);
-        })
-        .catch(err => {
-            console.error(err.message);
-        })
-</script>
+    <div id="result"></div>
 </body>
 </html>
-<!-- 7c0303422fab6c51f4a7beb26b3149d2 -->
+
+<script src="prueba.js"></script>

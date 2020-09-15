@@ -1,8 +1,9 @@
+<?php
+include('../modelo/validar.php');
+if(isset($_SESSION['usuario'])){
+?>
 <div class="container">
-
-    
     <h1 class="text-center">Informes</h1>
-    
     <div class="">
         <button class="btn btn-info" id="informeViaje">Informe de Viajes Realizados</button>
     </div>
@@ -62,3 +63,8 @@
 <script src="extras/js/jspdf.min.js"></script>
 <script src="js/main.js"></script>
 <script src="js/informes.js"></script>
+<?php 
+}else{
+    header('HTTP/1.1 401');
+    die('Credenciales incorrectas');}
+?>

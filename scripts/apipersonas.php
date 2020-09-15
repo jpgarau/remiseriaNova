@@ -1,4 +1,10 @@
 <?php
+$dir = is_dir('modelo') ? '' : '../';
+include_once($dir . 'modelo/validar.php');
+if(!isset($_SESSION['usuario'])) {
+    header('HTTP/1.1 401');
+    die('No Autorizado');
+}
 if (!peticion_ajax()) {
     header('HTTP/1.1 401');
     die(json_encode(array('exito' => false, 'msg' => 'No Autorizado')));

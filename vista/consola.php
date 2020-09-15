@@ -1,3 +1,7 @@
+<?php
+include('../modelo/validar.php');
+if(isset($_SESSION['usuario'])){
+?>
 <div class="sidenav" id="mySidenav">
     <span class="closebtn" onclick="closeNav()">&times;</span>
     <div class="row align-items-top h-75">
@@ -300,3 +304,8 @@
 <script src="extras/js/jspdf.min.js"></script>
 <script src="js/main.js"></script>
 <script src="js/consola.js"></script>
+<?php 
+}else{
+    header('HTTP/1.1 401');
+    die('Credenciales incorrectas');}
+?>

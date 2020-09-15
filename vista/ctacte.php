@@ -1,3 +1,7 @@
+<?php
+include('../modelo/validar.php');
+if(isset($_SESSION['usuario'])){
+?>
 <div class="container h-100">
     <h3 class="text-center"><i>Cuenta Corriente</i></h3>
     <div class="row">
@@ -116,3 +120,8 @@
 <script src="extras/js/NumeroALetras.js"></script>
 <script src="js/main.js"></script>
 <script src="js/ctacte.js"></script>
+<?php 
+}else{
+    header('HTTP/1.1 401');
+    die('Credenciales incorrectas');}
+?>

@@ -1,3 +1,7 @@
+<?php
+include('../modelo/validar.php');
+if(isset($_SESSION['usuario'])){
+?>
 <div style="height: 89vh;">
 
     <div class="d-flex justify-content-around h-50 w-100 container">
@@ -45,3 +49,9 @@
 
 <script src="js/main.js"></script>
 <script src="js/servicios.js"></script>
+
+<?php 
+}else{
+    header('HTTP/1.1 401');
+    die('Credenciales incorrectas');}
+?>

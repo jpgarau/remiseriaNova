@@ -379,9 +379,10 @@ class Viaje
                 $stmt->execute();
                 $arrViajes = $stmt->get_result();
                 $stmt->close();
+                $encontrados = $arrViajes->num_rows;
                 $mysqli->close();
                 $viajes = $arrViajes->fetch_all(MYSQLI_ASSOC);
-                $arr = array('exito'=>true,'msg'=>'',$viajes);
+                $arr = array('exito'=>true,'msg'=>'', 'encontrados'=>$encontrados, $viajes);
             }
         } catch (Exception $e) {
             $arr['msg'] = $e->getMessage();

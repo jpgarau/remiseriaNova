@@ -122,8 +122,15 @@ class Servicio{
                 $stmt->bind_param('ssii',$fechaSal,$horaSal,$estado,$idServicio);
                 $stmt->execute();
                 $stmt->close();
-                $mysqli->close();
-                $arr = array('exito'=>true, 'msg'=>'');
+                $sql = "DELETE FROM pila WHERE idServicio=?";
+                $stmt2 = $mysqli->prepare($sql);
+                if($stmt2!==FALSE){
+                    $stmt2->bind_param('i',$idServicio);
+                    $stmt2->execute();
+                    $stmt2->close();
+                    $mysqli->close();
+                    $arr = array('exito'=>true, 'msg'=>'');
+                }
             }
         } catch (Exception $e) {
             $arr['msg'] = $e->getMessage();
@@ -156,7 +163,7 @@ class Servicio{
         $arr = array('exito'=>false, 'msg'=>'Error al buscar');
         try {
             $idChofer = $this->getIdChofer();
-            $sql = 'SELECT idServicio FROM servicio WHERE idChofer=? AND estado=1';
+            $sql = 'SELECT servicio.idServicio, servicio.idVehiculo, personas.ayn FROM servicio, personas WHERE servicio.idChofer=? AND servicio.estado=1 AND servicio.idChofer=personas.idPersonas';
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
@@ -171,6 +178,33 @@ class Servicio{
                     $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrados, $respuesta);
                 }else{
                     $arr = array('exito'=>true, 'msg'=>'', 'encontrados'=>$encontrados);
+                }
+                $mysqli->close();
+            }
+        } catch (Exception $e) {
+            $arr['msg'] = $e->getMessage();
+        }
+        return $arr;
+    }
+
+    public function buscarServicio(){
+        $arr = array('exito'=>false, 'msg'=>'Error al buscar');
+        try {
+            $idServicio = $this->getIdServicio();
+            $sql = 'SELECT * FROM servicio WHERE idServicio=? AND estado=1';
+            $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
+            $stmt = $mysqli->prepare($sql);
+            if($stmt!==FALSE){
+                $stmt->bind_param('i',$idServicio);
+                $stmt->execute();
+                $rs = $stmt->get_result();
+                $encontrados = $rs->num_rows;
+                $stmt->close();
+                if($encontrados>0){
+                    $arr = array('exito'=>true, 'msg'=>'');
+                }else{
+                    $arr = array('exito'=>false, 'msg'=>'');
                 }
                 $mysqli->close();
             }

@@ -1,3 +1,7 @@
+<?php
+include('../modelo/validar.php');
+if(isset($_SESSION['usuario'])){
+?>
 <div class="input-group float-left mb-2 col-12 col-md-6 col-lg-4">
     <div class="input-group-prepend">
         <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -68,3 +72,8 @@
         <strong id="errorCuit">* Este campo no debe estar vacio.</strong>
     </div>
 </div>
+<?php 
+}else{
+    header('HTTP/1.1 401');
+    die('Credenciales incorrectas');}
+?>

@@ -1,18 +1,21 @@
 <?php
-$dir = is_dir('modelo')?"":"../";
-include_once($dir."modelo/validar.php");
-include_once($dir."modelo/conexion.php");
+$dir = is_dir('modelo') ? "" : "../";
+include_once $dir . "modelo/validar.php";
+include_once $dir . "modelo/conexion.php";
 
-class Usuario{
+class Usuario
+{
     private $usuarioId;
     private $nombre;
     private $apellido;
     private $usuario;
     private $clave;
     private $perfilId;
+    private $idChofer;
     private $estado;
 
-    public function __construct(){
+    public function __construct()
+    {
         $driver = new mysqli_driver();
         $driver->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
         $this->usuarioId = 0;
@@ -21,246 +24,305 @@ class Usuario{
         $this->usuario = "";
         $this->clave = "";
         $this->perfilId = 0;
+        $this->idChofer = null;
         $this->estado = 0;
     }
 
     //getters
 
-    public function getUsuarioId(){
+    public function getUsuarioId()
+    {
         return $this->usuarioId;
     }
-    public function getNombre(){
+    public function getNombre()
+    {
         return $this->nombre;
     }
-    public function getApellido(){
+    public function getApellido()
+    {
         return $this->apellido;
     }
-    public function getUsuario(){
+    public function getUsuario()
+    {
         return $this->usuario;
     }
-    public function getClave(){
+    public function getClave()
+    {
         return $this->clave;
     }
-    public function getPerfilId(){
+    public function getPerfilId()
+    {
         return $this->perfilId;
     }
-    public function getEstado(){
+    public function getIdChofer()
+    {
+        return $this->idChofer;
+    }
+    public function getEstado()
+    {
         return $this->estado;
     }
 
     //setters
 
-    public function setUsuarioId($usuarioId){
+    public function setUsuarioId($usuarioId)
+    {
         $this->usuarioId = $usuarioId;
     }
-    public function setNombre($nombre){
+    public function setNombre($nombre)
+    {
         $this->nombre = '';
         $error = false;
         $nombre = trim($nombre);
-        $nombre = filter_var($nombre,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if($nombre===FALSE || is_null($nombre) || strlen($nombre)===0) $error = true;
-        if(!$error){
+        $nombre = filter_var($nombre, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if ($nombre === FALSE || is_null($nombre) || strlen($nombre) === 0) $error = true;
+        if (!$error) {
             $this->nombre = $nombre;
         }
         return $error;
     }
-    public function setApellido($apellido){
+    public function setApellido($apellido)
+    {
         $this->apellido = '';
         $error = false;
         $apellido = trim($apellido);
-        $apellido = filter_var($apellido,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if($apellido===FALSE || is_null($apellido) || strlen($apellido)===0) $error = true;
-        if(!$error){
+        $apellido = filter_var($apellido, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if ($apellido === FALSE || is_null($apellido) || strlen($apellido) === 0) $error = true;
+        if (!$error) {
             $this->apellido = $apellido;
         }
         return $error;
     }
-    public function setUsuario($usuario){
+    public function setUsuario($usuario)
+    {
         $this->usuario = '';
         $error = false;
         $usuario = trim($usuario);
-        $usuario = filter_var($usuario,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if($usuario===FALSE || is_null($usuario) || strlen($usuario)===0) $error = true;
-        if(!$error){
+        $usuario = filter_var($usuario, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if ($usuario === FALSE || is_null($usuario) || strlen($usuario) === 0) $error = true;
+        if (!$error) {
             $this->usuario = $usuario;
         }
         return $error;
     }
-    public function setClave($clave){
+    public function setClave($clave)
+    {
         $this->clave = '';
         $error = false;
         $clave = trim($clave);
-        $clave = filter_var($clave,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        if($clave===FALSE || is_null($clave) || strlen($clave)===0) $error = true;
-        if(!$error){
-            $this->clave = password_hash($clave,PASSWORD_DEFAULT);
+        $clave = filter_var($clave, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if ($clave === FALSE || is_null($clave) || strlen($clave) === 0) $error = true;
+        if (!$error) {
+            $this->clave = password_hash($clave, PASSWORD_DEFAULT);
         }
         return $error;
     }
-    public function setPerfilId($perfilId){
+    public function setPerfilId($perfilId)
+    {
         $this->perfilId = 0;
         $error = false;
         $perfilId = filter_var($perfilId, FILTER_VALIDATE_INT);
-        if($perfilId===FALSE || is_null($perfilId)) $error = true;
-        if(!$error){
+        if ($perfilId === FALSE || is_null($perfilId)) $error = true;
+        if (!$error) {
             $this->perfilId = $perfilId;
         }
         return $error;
     }
-    public function setEstado($estado){
+    public function setIdChofer($idChofer)
+    {
+        $this->idChofer = null;
+        $error = false;
+        $idChofer = filter_var($idChofer, FILTER_VALIDATE_INT);
+        if ($idChofer === FALSE) $error = true;
+        if (!$error) {
+            $this->idChofer = $idChofer;
+        }
+    }
+    public function setEstado($estado)
+    {
         $this->estado = $estado;
     }
-
-    public function agregarUsuario(){
+    
+    public function agregarUsuario()
+    {
+        $arr = array('exito' => false, 'msg' => 'Error al agregar');
         try {
-            $error = true;
             $nombre = $this->getNombre();
             $apellido = $this->getApellido();
             $usuario = $this->getUsuario();
+            $pass = explode(" ",strtolower(trim($apellido)));
+            $this->setClave(substr(strtolower(trim($nombre)),0,1).$pass[0]);
             $clave = $this->getClave();
             $perfilId = $this->getPerfilId();
-            $estado = 0;
-            $sql = "INSERT INTO usuarios (nombre, apellido, usuario, clave, perfilId, estado) VALUES (?,?,?,?,?,?)";
+            $idChofer = $this->getIdChofer();
+            $estado = 50;
+            $sql = "INSERT INTO usuarios (nombre, apellido, usuario, clave, perfilId, idChofer, estado) VALUES (?,?,?,?,?,?,?)";
             $mysqli = Conexion::abrir();
             $mysqli->set_charset("utf8");
             $stmt = $mysqli->prepare($sql);
-            if($stmt!==FALSE){
-                $stmt->bind_param('ssssii',$nombre,$apellido,$usuario,$clave,$perfilId,$estado);
+            if ($stmt !== FALSE) {
+                $stmt->bind_param('ssssiii', $nombre, $apellido, $usuario, $clave, $perfilId, $idChofer, $estado);
                 $stmt->execute();
                 $stmt->close();
+                $arr = array('exito' => true, 'msg' => '');
             }
-            $error = false;
         } catch (Exception $e) {
-            $error = $e->getMessage();
+            $arr['msg'] = $e->getMessage();
         }
-        return $error;
+        return $arr;
     }
-    public function modificarUsuario(){
+
+    public function modificarUsuario()
+    {
+        $arr = array('exito' => false, 'msg' => 'Error al modificar');
         try {
-            $error = true;
             $nombre = $this->getNombre();
             $apellido = $this->getApellido();
             $usuario = $this->getUsuario();
-            $clave = $this->getClave();
             $perfilId = $this->getPerfilId();
-            $usuarioId = $_SESSION['$susuarioId'];
-            $sql = "UPDATE INTO usuarios (nombre, apellido, usuario, clave, perfilId) VALUES (?,?,?,?,?) WHERE usuarioId=?";
+            $idChofer = $this->getIdChofer();
+            $usuarioId = $this->getUsuarioId();
+            $sql = "UPDATE usuarios SET nombre=?, apellido=?, usuario=?, perfilId=?, idChofer=? WHERE usuarioId=?";
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
-            if($stmt!==FALSE){
-                $stmt->bind_param('ssssii', $nombre, $apellido, $usuario, $clave, $perfilId, $usuarioId);
+            if ($stmt !== FALSE) {
+                $stmt->bind_param('sssiii', $nombre, $apellido, $usuario, $perfilId, $idChofer, $usuarioId);
                 $stmt->execute();
                 $stmt->close();
+                $arr = array('exito' => true, 'msg' => '');
             }
-            $error = false;
         } catch (Exception $e) {
-            $error = $e->getMessage();
+            $arr['msg'] = $e->getMessage();
         }
-        return $error;
+        return $arr;
     }
-    public function eliminarUsuario(){
+
+    public function eliminarUsuario()
+    {
+        $arr = array('exito' => false, 'msg' => 'Error al eliminar');
         try {
-            $error = true;
-            $usuarioId = $_SESSION['$susuarioId'];
+            $usuarioId = $this->getUsuarioId();
             $estado = 99;
-            $sql = "UPDATE INTO usuarios (estado) VALUES (?) WHERE usuarioid=?";
+            $sql = "UPDATE usuarios SET estado=? WHERE usuarioid=?";
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
-            if($stmt!==FALSE){
-                $stmt->bind_param('ii',$estado,$usuarioId);
+            if ($stmt !== FALSE) {
+                $stmt->bind_param('ii', $estado, $usuarioId);
                 $stmt->execute();
                 $stmt->close();
+                $arr = array('exito' => true, 'msg' => '');
             }
-            $error = false;
         } catch (Exception $e) {
-            $error = $e->getMessage();
+            $arr['msg'] = $e->getMessage();
         }
-        return $error;
+        return $arr;
     }
-    public function buscarUsuario(){
+
+    public function buscarUsuario()
+    {
+        $arr = array('exito' => false, 'msg' => 'Error al buscar');
         try {
-            $usuarioId = $_SESSION['$susuarioId'];
-            $sql = "SELECT nombre, apellido, usuario, clave, perfilId, estado FROM usuarios WHERE usuarioId";
+            $usuarioId = $this->getUsuarioId();
+            $sql = "SELECT nombre, apellido, usuario, clave, perfilId, idChofer, estado FROM usuarios WHERE usuarioId";
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
-            if($stmt!==FALSE){
-                $stmt->bind_param('i',$usuarioId);
+            if ($stmt !== FALSE) {
+                $stmt->bind_param('i', $usuarioId);
                 $stmt->execute();
                 $rs = $stmt->get_result();
-                while($fila=$rs->fetch_array()){
-                    $this->setUsuarioId($usuarioId);
-                    $this->setNombre($fila[0]);
-                    $this->setApellido($fila[1]);
-                    $this->setUsuario($fila[2]);
-                    $this->setClave($fila[3]);
-                    $this->setPerfilId($fila[4]);
-                    $this->setEstado($fila[5]);
-                }
+                $usuario = $rs->fetch_assoc();
                 $stmt->close();
-                return $this;
-            }else{
-                return true;
+                $mysqli->close();
+                $arr = array('exito' => true, 'msg' => '', $usuario);
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            $arr['msg'] = $e->getMessage();
         }
+        return $arr;
     }
-    public function listarUsuario(){
+
+    public function listarUsuario()
+    {
+        $arr = array('exito' => false, 'msg' => 'Error al listar');
         try {
-            $arrusuarios = array();
-            $sql = "SELECT * FROM usuarios";
+            $sql = "SELECT usuarios.usuarioid, usuarios.apellido, usuarios.nombre, usuarios.usuario, usuarios.perfilid, usuarios.idChofer, perfil.descripcion FROM usuarios, perfil WHERE  usuarios.perfilid=perfil.perfilid AND usuarios.estado BETWEEN 0 AND 90";
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
-            if($stmt!==FALSE){
+            if ($stmt !== FALSE) {
                 $stmt->execute();
-                $arrusuarios = $stmt->get_result();
+                $rs = $stmt->get_result();
                 $stmt->close();
-                return $arrusuarios;
-            }else{
-                return true;
+                $usuarios = $rs->fetch_all(MYSQLI_ASSOC);
+                $mysqli->close();
+                $arr = array('exito' => true, 'msg' => '', $usuarios);
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            $arr['msg'] = $e->getMessage();
         }
+        return $arr;
     }
-    public function verificarUsuario($user,$pass){
-        $arr = array('exito'=>false, 'msg'=>'Error al verificar');
+
+    public function verificarUsuario($user, $pass)
+    {
+        $arr = array('exito' => false, 'msg' => 'Error al verificar');
         try {
             $error = false;
             $user = trim($user);
             $user = filter_var($user, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            if($user===FALSE || is_null($user) || strlen($user)===0) $error = true;
+            if ($user === FALSE || is_null($user) || strlen($user) === 0) $error = true;
             $pass = trim($pass);
             $pass = filter_var($pass, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            if($pass===FALSE || is_null($pass) || strlen($pass)===0 || $error===true ) $error = true;
-            if(!$error){
-                $sql = "SELECT nombre, apellido, usuario, clave, perfilid, idChofer FROM usuarios WHERE usuario=? AND estado BETWEEN 0 AND 90";
+            if ($pass === FALSE || is_null($pass) || strlen($pass) === 0 || $error === true) $error = true;
+            if (!$error) {
+                $sql = "SELECT * FROM usuarios WHERE usuario=? AND estado BETWEEN 0 AND 90";
                 $mysqli = Conexion::abrir();
                 $mysqli->set_charset('utf8');
                 $stmt = $mysqli->prepare($sql);
-                if($stmt!==FALSE){
-                    $stmt->bind_param('s',$user);
+                if ($stmt !== FALSE) {
+                    $stmt->bind_param('s', $user);
                     $stmt->execute();
                     $rs = $stmt->get_result();
                     $stmt->close();
-                    $arr=array('exito'=>true, 'msg'=>'','encontrado'=>false);
-                    while($fila=$rs->fetch_array(MYSQLI_ASSOC)){
-                        $error = password_verify($pass,$fila['clave']);
-                        if ($error){
-                            unset($fila['clave']); 
-                            $arr=array('exito'=>true, 'msg'=>'','encontrado'=>true,$fila);
-                        break;
+                    $arr = array('exito' => true, 'msg' => '', 'encontrado' => false);
+                    while ($fila = $rs->fetch_array(MYSQLI_ASSOC)) {
+                        $error = password_verify($pass, $fila['clave']);
+                        if ($error) {
+                            unset($fila['clave']);
+                            $arr = array('exito' => true, 'msg' => '', 'encontrado' => true, $fila);
+                            break;
                         }
                     }
                 }
             }
         } catch (Exception $e) {
-            $arr['msg'] = $e->getMessage(); //->getMessage();
+            $arr['msg'] = $e->getMessage();
         }
         return $arr;
     }
-}    
+
+    public function solicitarCambioClave(){
+        $arr = array('exito'=>false, 'msg'=>'Error al solicitar el cambio de clave');
+        try {
+            $usuarioid = $this->getUsuarioId();
+            $sql = "UPDATE usuarios SET estado=50 WHERE usuarioid=?";
+            $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
+            $stmt = $mysqli->prepare($sql);
+            if($stmt!==FALSE){
+                $stmt->bind_param('i', $usuarioid);
+                $stmt->execute();
+                $stmt->close();
+                $mysqli->close();
+                $arr = array('exito'=>true, 'msg'=>'');
+            }
+        } catch (Exception $e) {
+            $arr['msg'] = $e->getMessage();
+        }
+        return $arr;
+    }
+
+}

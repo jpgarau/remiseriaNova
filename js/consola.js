@@ -758,7 +758,11 @@ function imprimirInforme() {
 		dataType: "json",
 		success: function (response) {
 			if (response.exito) {
-				generarInformePDF(response[0], movil, chofer, fecha);
+				if(response.encontrados>0){
+					generarInformePDF(response[0], movil, chofer, fecha);
+				}else{
+					alertify.error('No se encontraron viajes para este servicio');
+				}
 			} else {
 				console.log(response.msg);
 			}
@@ -769,82 +773,7 @@ function imprimirInforme() {
 	});
 }
 
-function generarInformePDF(servicios, movil, chofer, fecha) {
-	let total = 0.0,
-		ctaCte = 0.0,
-		recaudado = 0.0,
-		viajes = 0;
-	var informe = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
 
-	informe.setFontSize(10);
-	informe.text(160, 5, "Fecha: " + fecha.fecha2);
-
-	informe.setFontSize(18);
-	informe.text(80, 10, "REMISERIA NOVA");
-
-	informe.setFontSize(14);
-	informe.setFontType("bold");
-	informe.text(75, 20, "INFORME DE TURNO");
-
-	informe.setFontSize(10);
-	informe.text(20, 30, "Movil: " + movil);
-	informe.text(40, 30, "Chofer: " + chofer);
-
-	informe.roundedRect(10, 35, 190, 7, 1, 1);
-
-	informe.text(12, 40, "Salió");
-	informe.text(23, 40, "Libre");
-	informe.text(35, 40, "Origen");
-	informe.text(92, 40, "Destino");
-	informe.text(148, 40, "CC");
-	informe.text(163, 40, "Importe");
-	informe.text(190, 40, "Total");
-
-	informe.setFontType("normal");
-	let linea = 46;
-
-	servicios.forEach((servicio) => {
-		if (servicio.idCliente > 0) {
-			ctaCte += servicio.importe == null ? 0.0 : parseFloat(servicio.importe);
-			informe.text(148, linea, "CC");
-		}
-		total += servicio.importe == null ? 0.0 : parseFloat(servicio.importe);
-		informe.text(12, linea, servicio.hora.substring(0, 5));
-		informe.text(23, linea, servicio.hora.substring(0, 5));
-		let origen = informe.splitTextToSize(servicio.origen, 55);
-		let destino = informe.splitTextToSize(
-			servicio.destino == null ? "" : servicio.destino,
-			55
-		);
-		informe.text(35, linea, origen[0]);
-		informe.text(92, linea, destino[0]);
-
-		let importe =
-			servicio.importe == null ? "0.00" : servicio.importe.toString();
-		informe.text(176, linea, "$ " + importe, "right");
-		informe.text(199, linea, "$ " + total.toFixed(2).toString(), "right");
-		viajes++;
-		if (linea > 285) {
-			informe.addPage();
-			linea = 10;
-		}
-		linea += 5;
-	});
-
-	(recaudado = total - ctaCte), informe.roundedRect(140, linea, 60, 17, 1, 1);
-	linea += 5;
-	informe.text(142, linea, "Recaudado:");
-	informe.text(199, linea, "$ " + recaudado.toFixed(2).toString(), "right");
-	linea += 5;
-	informe.text(142, linea, "Cuenta Corriente:");
-	informe.text(199, linea, "$ " + ctaCte.toFixed(2).toString(), "right");
-	linea += 5;
-	informe.setFontType("bold");
-	informe.text(142, linea, "Totales: " + viajes.toString() + " (viaje/s)");
-	// informe.text(162,linea, viajes.toString()+" (viaje/s)");
-	informe.text(199, linea, "$ " + total.toFixed(2).toString(), "right");
-	informe.save(fecha.fecha + " -" + " turno movil " + movil + ".pdf");
-}
 
 //FUNCIONES GENERALES
 

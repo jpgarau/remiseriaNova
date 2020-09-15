@@ -1,3 +1,7 @@
+<?php
+include('../modelo/validar.php');
+if(isset($_SESSION['usuario'])){
+?>
 <div class="d-flex justify-content-center"> 
     <p class="bg-dark text-warning text-uppercase px-2 rounded-bottom mb-0">vehiculos</p>  
 </div>
@@ -99,3 +103,9 @@
     </div>
 </div>
 <script src="js/vehiculos.js?v=3"></script>
+
+<?php 
+}else{
+    header('HTTP/1.1 401');
+    die('Credenciales incorrectas');}
+?>
