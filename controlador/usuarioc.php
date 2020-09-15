@@ -30,4 +30,11 @@ class UsuarioC{
         $ret = $ousuario->verificarUsuario($usuario,$password);
         return $ret;
     }
+    public function cambiarClave($usuarioid, $clave){
+        $ousuario = new Usuario();
+        $ousuario->setUsuarioId($usuarioid);
+        $ousuario->setClave($clave);
+        $retorno = $ousuario->cambiarClave();
+        return $retorno;
+    }
 }

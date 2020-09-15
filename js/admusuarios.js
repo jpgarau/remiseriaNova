@@ -24,8 +24,8 @@ $(document).ready(function(){
         $('#adm_usuarios .modal-body input#apellido').val(apellido);
         $('#adm_usuarios .modal-body input#nombre').val(nombre);
         $('#adm_usuarios .modal-body input#usuario').val(usuario);
-        $('#adm_usuarios .modal-body input#idusuario').val(usuarioid);
-        $('#select_perfiles').val(perfilid);
+        $('#adm_usuarios .modal-body input#idusuario').val(usuarioid.slice(3));
+        $('#select_perfiles').val(perfilid.slice(3));
         $('#select_choferes').val(idChofer);
 
         $('#adm_usuarios').modal('show');
@@ -113,11 +113,11 @@ function cargarFila(objeto){
         '<td>'+objeto.apellido+'</td>'+
         '<td>'+objeto.nombre+'</td>'+
         '<td>'+objeto.usuario+'</td>'+
-        '<td>'+objeto.descripcion+'<input type="hidden" value="'+objeto.perfilid+'">'+'</td>'+
+        '<td>'+objeto.descripcion+'<input type="hidden" value="pid'+objeto.perfilid+'">'+'</td>'+
         '<td>'+(objeto.idChofer==null?" ":objeto.idChofer)+'<input type="hidden" value="'+(objeto.idChofer==null?0:objeto.idChofer)+'">'+'</td>'+
         '<td>'+'<button class="btn btn-dark btn_editar" title="Modificar Usuario" data-toggle="modal"><i class="fas fa-edit"></i></button>'+'</td>'+
         '<td>'+'<button class="btn btn-danger btn_borrar" title="Eliminar Usuario"><i class="fas fa-trash-alt"></i></button>'+'</td>'+
-        '<input type="hidden" value="'+objeto.usuarioid+'">'+
+        '<input type="hidden" value="uid'+objeto.usuarioid+'">'+
         '</tr>');
 }
 
@@ -134,7 +134,7 @@ function agregarUsuario(apellido, nombre, usuario, idperfil, idChofer, descripci
         dataType: 'json',
         success: function(response){
             if(response.exito==true){
-                var ousuario = {'apellido':apellido, 'nombre':nombre, 'usuario':usuario, 'perfilid': idperfil, 'idChofer':idChofer, 'idusuario':response.id,'descripcion':descripcion};
+                var ousuario = {'apellido':apellido, 'nombre':nombre, 'usuario':usuario, 'perfilid': idperfil, 'idChofer':idChofer, 'usuarioid':response.id,'descripcion':descripcion};
                 cargarFila(ousuario);
             }else{
                 alertify.error('Hubo un Error');
@@ -161,7 +161,7 @@ function actualizarUsuario(idusuario, apellido, nombre, usuario, idperfil, idCho
         datatype: 'json',
         success: function(response){
             if(response.exito==true){
-                var ousuario = {'apellido':apellido, 'nombre':nombre, 'usuario':usuario, 'perfilid': idperfil, 'idChofer':idChofer, 'idusuario':idusuario,'descripcion':descripcion};
+                var ousuario = {'apellido':apellido, 'nombre':nombre, 'usuario':usuario, 'perfilid': idperfil, 'idChofer':idChofer, 'usuarioid':idusuario,'descripcion':descripcion};
                 actualizarFila(ousuario);
             }else{
                 alertify.error('Hubo un Error');
@@ -172,14 +172,14 @@ function actualizarUsuario(idusuario, apellido, nombre, usuario, idperfil, idCho
 }
 
 function actualizarFila(objeto){
-    var input = $("input[value='"+objeto.idusuario+"']");
-    input[1].parentNode.childNodes[0].innerText=objeto.apellido;
-    input[1].parentNode.childNodes[1].innerText=objeto.nombre;
-    input[1].parentNode.childNodes[2].innerText=objeto.usuario;
-    input[1].parentNode.childNodes[3].childNodes[0].data=objeto.descripcion;
-    input[1].parentNode.childNodes[3].childNodes[1].value=objeto.idperfil;
-    input[1].parentNode.childNodes[4].childNodes[0].data=(objeto.idChofer==null?" ":objeto.idChofer);
-    input[1].parentNode.childNodes[4].childNodes[1].value=(objeto.idChofer==null?0:objeto.idChofer);
+    var input = $("input[value='uid"+objeto.usuarioid+"']");
+    input[0].parentNode.childNodes[0].innerText=objeto.apellido;
+    input[0].parentNode.childNodes[1].innerText=objeto.nombre;
+    input[0].parentNode.childNodes[2].innerText=objeto.usuario;
+    input[0].parentNode.childNodes[3].childNodes[0].data=objeto.descripcion;
+    input[0].parentNode.childNodes[3].childNodes[1].value='pid'+objeto.idperfil;
+    input[0].parentNode.childNodes[4].childNodes[0].data=(objeto.idChofer==null?" ":objeto.idChofer);
+    input[0].parentNode.childNodes[4].childNodes[1].value=(objeto.idChofer==null?0:objeto.idChofer);
 }
 
 function borrarUsuario(id, trBorrar){
@@ -257,7 +257,7 @@ function traerChoferes(){
 }
 
 function confirmarBorrado(botonBorrar){
-    var id = botonBorrar.parentNode.parentNode.childNodes[7].value;
+    var id = botonBorrar.parentNode.parentNode.childNodes[7].value.slice(3);
     var trBorrar = botonBorrar.parentNode.parentNode;
     alertify.confirm('Eliminar', 'Esta seguro de que desea eliminarlo?', function(){
         borrarUsuario(id, trBorrar);

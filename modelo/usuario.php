@@ -163,8 +163,10 @@ class Usuario
             if ($stmt !== FALSE) {
                 $stmt->bind_param('ssssiii', $nombre, $apellido, $usuario, $clave, $perfilId, $idChofer, $estado);
                 $stmt->execute();
+                $id = $mysqli->insert_id;
                 $stmt->close();
-                $arr = array('exito' => true, 'msg' => '');
+                $mysqli->close();
+                $arr = array('exito' => true, 'msg' => '', 'id'=>$id);
             }
         } catch (Exception $e) {
             $arr['msg'] = $e->getMessage();
@@ -325,4 +327,26 @@ class Usuario
         return $arr;
     }
 
+    public function cambiarClave(){
+        $arr = array('exito'=>false, 'msg'=>'Error al realizar el cambio de clave');
+        try {
+            $usuarioid = $this->getUsuarioId();
+            $clave = $this->getClave();
+            $estado = 0;
+            $sql = 'UPDATE usuarios SET clave=?, estado=? WHERE usuarioid=?';
+            $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
+            $stmt = $mysqli->prepare($sql);
+            if($stmt!==FALSE){
+                $stmt->bind_param('sii', $clave, $estado, $usuarioid);
+                $stmt->execute();
+                $stmt->close();
+                $mysqli->close();
+                $arr = array('exito'=>true, 'msg'=>'');
+            }
+        } catch (Exception $e) {
+            $arr['msg'] = $e->getMessage();
+        }
+        return $arr;
+    }
 }

@@ -8,7 +8,10 @@
     }
     if(!isset($_SESSION['usuario'])){
         include_once($dir.'vista/login.php');
-    }    
+    }
+    if(isset($_SESSION['userProfile']) && $_SESSION['userProfile']['estado']===50){
+        include_once $dir.'vista/cambioPass.php';
+    }
 ?>
 <!DOCTYPE html>
 <html lang="es">

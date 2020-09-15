@@ -3,7 +3,7 @@
 $dir = is_dir('modelo')?"":"../";
 include_once($dir.'modelo/validar.php');
 include_once($dir.'vista/header.php');
-if(isset($_SESSION['usuario'])){
+if(isset($_SESSION['usuario']) && $_SESSION['userProfile']['estado']===0){
 ?>
 
 <body>
