@@ -47,7 +47,7 @@ $retorno = $perfilp->listarProgramas();
                     <i class="fas fa-user"></i> <?php echo $_SESSION['usuario']; ?>
                 </a>
                 <div class="dropdown-menu dropdown-menu-left dropdown-menu-sm-right" aria-labelledby="menuUsuario">
-                    <?php if($_SESSION['userProfile']['perfilid']===1){?>
+                    <?php if($_SESSION['userProfile']['perfilid']===1 || $_SESSION['userProfile']['perfilid']===2){?>
                         <button class="dropdown-item" id="seguridad"><i class="fas fa-shield-alt"></i> Seguridad</button>
                     <?php }?>
                     <button class="dropdown-item" id="cambioPass"><i class="fas fa-key"></i> Cambiar Contraseña</button>

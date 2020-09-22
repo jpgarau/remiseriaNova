@@ -150,10 +150,12 @@ class Perfil{
 		$arr = array('exito'=>false,'msg'=>'Error al Listar');
 		try{
 			$arrperfil = array();
-			$sql = "SELECT perfilid, descripcion, estado FROM perfil WHERE estado = 0";
+			$perfilid = $_SESSION['userProfile']['perfilid'];
+			$sql = "SELECT perfilid, descripcion, estado FROM perfil WHERE estado = 0 AND perfilid >= ?";
 			$mysqli = Conexion::abrir();
 			$stmt = $mysqli->prepare($sql);
 			if($stmt!==FALSE){
+				$stmt->bind_param('i', $perfilid);
 				$stmt->execute();
 				$arrperfil = $stmt->get_result();
 				$stmt->close();

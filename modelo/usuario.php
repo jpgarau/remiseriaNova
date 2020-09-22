@@ -250,11 +250,13 @@ class Usuario
     {
         $arr = array('exito' => false, 'msg' => 'Error al listar');
         try {
-            $sql = "SELECT usuarios.usuarioid, usuarios.apellido, usuarios.nombre, usuarios.usuario, usuarios.perfilid, usuarios.idChofer, perfil.descripcion FROM usuarios, perfil WHERE  usuarios.perfilid=perfil.perfilid AND usuarios.estado BETWEEN 0 AND 90";
+            $perfilid = $_SESSION['userProfile']['perfilid'];
+            $sql = "SELECT usuarios.usuarioid, usuarios.apellido, usuarios.nombre, usuarios.usuario, usuarios.perfilid, usuarios.idChofer, perfil.descripcion FROM usuarios, perfil WHERE  usuarios.perfilid=perfil.perfilid AND usuarios.perfilid >= ? AND usuarios.estado BETWEEN 0 AND 90";
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
             if ($stmt !== FALSE) {
+                $stmt->bind_param('i',$perfilid);
                 $stmt->execute();
                 $rs = $stmt->get_result();
                 $stmt->close();

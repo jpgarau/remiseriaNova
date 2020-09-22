@@ -1,4 +1,9 @@
+<?php
+$dir = is_dir('modelo')?'':'../';
+include_once $dir.'modelo/validar.php';
 
+if($_SESSION['userProfile']['perfilid']===1){
+?>
 <button type="submit" class="btn btn-primary btn-lg m-2 rounded-circle float-right" name="addprograma" id="addprograma" title="Agregar Programa" data-toggle="modal"><i class="fas fa-plus"></i></button>
 
 <div class="modal fade" id="adm_programas" tabindex="-1" role="dialog" aria-labelledby="Programas" aria-hidden="true">
@@ -75,3 +80,10 @@
 </table>
 
 <script src="js/admprograma.js"></script>
+
+<?php 
+}else{
+    header('HTTP/1.1 401');
+    die('Credenciales incorrectas');
+}
+?>

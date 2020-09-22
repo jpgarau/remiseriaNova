@@ -11,6 +11,7 @@ if(isset($_SESSION['usuario'])){
                     <tr>
                         <th>Marca</th>
                         <th>Patente</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -25,6 +26,7 @@ if(isset($_SESSION['usuario'])){
                 <thead>
                     <tr>
                         <th>Chofer</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -39,6 +41,9 @@ if(isset($_SESSION['usuario'])){
                         <th>Vehículo</th>
                         <th>Patente</th>
                         <th>Chofer</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody></tbody>
