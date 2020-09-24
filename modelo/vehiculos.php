@@ -298,7 +298,7 @@ class Vehiculo
         }
         return $arr;
     }
-    function listarVehiculosHabilitados(){
+    public function listarVehiculosHabilitados(){
         $arr = array('exito' => false, 'msg' => 'Hubo un error al listar');
         try {
             $arrvehiculos = array();
@@ -307,6 +307,29 @@ class Vehiculo
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
             if ($stmt !== FALSE) {
+                $stmt->execute();
+                $vehiculos = $stmt->get_result();
+                $stmt->close();
+                $arrvehiculos = $vehiculos->fetch_all(MYSQLI_ASSOC);
+                $arr = array('exito' => true, 'msg' => '', $arrvehiculos);
+                $mysqli->close();
+            }
+        } catch (Exception $e) {
+            $arr['msg'] = $e->getMessage();
+        }
+        return $arr;
+    }
+    public function listarVehiculosPropietario(){
+        $arr = array('exito' => false, 'msg' => 'Hubo un error al listar');
+        try {
+            $arrvehiculos = array();
+            $idPropietario = $_SESSION['userProfile']['idPropietario'];
+            $sql = "SELECT vehiculos.idVehiculos, vehiculos.marca, vehiculos.patente, vehiculos.vtoseguro, personas.ayn FROM vehiculos, personas WHERE vehiculos.titular = personas.idPersonas AND vehiculos.titular=?";
+            $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
+            $stmt = $mysqli->prepare($sql);
+            if ($stmt !== FALSE) {
+                $stmt->bind_param('i',$idPropietario);
                 $stmt->execute();
                 $vehiculos = $stmt->get_result();
                 $stmt->close();

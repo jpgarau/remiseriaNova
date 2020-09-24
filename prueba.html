@@ -10,24 +10,4 @@
 </body>
 </html>
 
-<!-- <script src="prueba.js"></script> -->
-
-<script>
-    let data = new FormData();
-    data.append('param','1');
-    let request = new Request('scripts/apiusuario.php',{
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'same-origin',
-        cache: 'no-cache',
-        body: data
-        });
-    // var headers = new Headers();
-    // headers.append('Content-Type', 'application/json');
-
-    fetch(request).then(function(response){
-        return response.json();
-    }).then(function(res){
-        console.log(res);
-    });
-</script>
+<script src="prueba.js"></script>

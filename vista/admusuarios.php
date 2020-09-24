@@ -44,6 +44,11 @@
                     <select id="select_choferes" class="form-control" name="choferes">
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="propietarios">Propietario</label>
+                    <select id="select_propietarios" class="form-control" name="propietarios">
+                    </select>
+                </div>
                 <div>
                     <input type="hidden" id="idusuario">
                 </div>
@@ -57,21 +62,26 @@
 
 <input type="text" name="buscador" id="buscador" class="buscador" placeholder="Buscar">
 
-<table id="tabla_usuarios" class="table table-hover mx-2">
-    <thead>
-        <tr>
-            <th>Apellido</th>
-            <th>Nombre</th>
-            <th>Usuario</th>
-            <th>Perfil</th>
-            <th>Chofer</th>
-            <th>Modificar</th>
-            <th>Eliminar</th>
-        </tr>
-    </thead>
-    <tbody>
-        
-    </tbody>
-</table>
+<div class="container">
+    <div class="table-responsive">
+
+        <table id="tabla_usuarios" class="table table-hover mx-2">
+            <thead>
+                <tr>
+                    <th>Apellido</th>
+                    <th>Nombre</th>
+                    <th>Usuario</th>
+                    <th>Perfil</th>
+                    <th class="text-center">Chofer</th>
+                    <th  class="text-center">Propietario</th>
+                    <th>Modificar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+            </table>
+    </div>
+</div>
 
 <script src="js/admusuarios.js"></script>

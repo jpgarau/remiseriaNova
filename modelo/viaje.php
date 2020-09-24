@@ -393,6 +393,10 @@ class Viaje
     public function informeViajes($idVehiculos, $fecha, $fechaHasta, $idChofer){
         $idVehiculos = filter_var($idVehiculos, FILTER_VALIDATE_INT);
         $idChofer = filter_var($idChofer, FILTER_VALIDATE_INT);
+        $hoy = new DateTime('now');
+        $AC = new DateTime('1900/01/01');
+        $fecha = is_null($fecha)||$fecha==''?$AC->format('Y-m-d'):$fecha;
+        $fechaHasta = is_null($fechaHasta)||$fechaHasta==''?$hoy->format('Y-m-d'):$fechaHasta;
         $arr = array('exito'=>false, 'msg'=>'Hubo un error al realizar el informe');
         try {
             $sql = "SELECT viajes.fecha, viajes.hora, viajes.idCliente, viajes.origen, viajes.destino, viajes.horaLibre, viajes.importe, servicio.idChofer, personas.ayn FROM viajes LEFT JOIN servicio on viajes.idServicio=servicio.idServicio LEFT JOIN personas on servicio.idChofer=personas.idPersonas WHERE viajes.fecha BETWEEN ? AND ? AND servicio.idVehiculo=? AND viajes.estado!=3"; 

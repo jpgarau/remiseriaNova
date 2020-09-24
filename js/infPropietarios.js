@@ -21,7 +21,7 @@ function listarVehiculos(){
     $.ajax({
         type:"POST",
         url:"scripts/apivehiculos.php",
-        data:{param:1},
+        data:{param:7},
         dataType: "json",
         success: function(response){
             if(response.exito){
@@ -97,7 +97,7 @@ function generarInformePDF(servicios, vehiculo){
 	let linea=41;
     let idChofer = 0;
     let fechaServicio = '';
-    servicios.forEach((servicio)=>{
+	servicios.forEach((servicio)=>{
         if (servicio.fecha!=fechaServicio){
             linea+=5;
             informe.setFontType('bold');

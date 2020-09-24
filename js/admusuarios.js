@@ -2,6 +2,8 @@ $(document).ready(function(){
     listar();
     traerPerfiles();
     traerChoferes();
+    traerPropietarios();
+
     $('#addusuario').on('click',function(){
         $('#adm_usuarios .modal-title').text('Agregar Usuario');
         $('#adm_usuarios .modal-body input#apellido').val('');
@@ -9,6 +11,7 @@ $(document).ready(function(){
         $('#adm_usuarios .modal-body input#usuario').val('');
         $('#select_perfiles').val($('#select_perfiles option').val());
         $('#select_choferes').val($('#select_choferes option').val());
+        $('#select_propietarios').val($('#select_propietarios option').val());
         $('#adm_usuarios .modal-body input#idusuario').val('Agregar');
         $('#adm_usuarios').modal('show');
     });
@@ -17,16 +20,18 @@ $(document).ready(function(){
         var apellido = boton[0].parentNode.parentNode.childNodes[0].innerText;
         var nombre = boton[0].parentNode.parentNode.childNodes[1].innerText;
         var usuario = boton[0].parentNode.parentNode.childNodes[2].innerText;
-        var perfilid = boton[0].parentNode.parentNode.childNodes[3].childNodes[1].value;
+        var perfilid = boton[0].parentNode.parentNode.childNodes[3].childNodes[1].value.slice(3);
         var idChofer = boton[0].parentNode.parentNode.childNodes[4].childNodes[1].value;
-        var usuarioid = boton[0].parentNode.parentNode.childNodes[7].value;
+        var idPropietario = boton[0].parentNode.parentNode.childNodes[5].childNodes[1].value;
+        var usuarioid = boton[0].parentNode.parentNode.childNodes[8].value.slice(3);
         $('#adm_usuarios .modal-title').text('Modificar Usuario');
         $('#adm_usuarios .modal-body input#apellido').val(apellido);
         $('#adm_usuarios .modal-body input#nombre').val(nombre);
         $('#adm_usuarios .modal-body input#usuario').val(usuario);
-        $('#adm_usuarios .modal-body input#idusuario').val(usuarioid.slice(3));
-        $('#select_perfiles').val(perfilid.slice(3));
+        $('#adm_usuarios .modal-body input#idusuario').val(usuarioid);
+        $('#select_perfiles').val(perfilid);
         $('#select_choferes').val(idChofer);
+        $('#select_propietarios').val(idPropietario);
 
         $('#adm_usuarios').modal('show');
     });
@@ -41,16 +46,17 @@ $(document).ready(function(){
         var usuario = $('#usuario').val();
         var idperfil = $('#select_perfiles').val();
         var idChofer = $('#select_choferes').val();
+        var idPropietario = $('#select_propietarios').val();
         var idusuario = $('#idusuario').val();
         var valido = 0;
         var descripcion = $('#select_perfiles option[value='+idperfil+']').text();
         valido = validarApellido(apellido) + validarNombre(nombre)+ validarUsuario(usuario)+validarPerfil(idperfil);
         if(valido==0){
             if(idusuario=='Agregar'){
-                agregarUsuario(apellido, nombre, usuario, idperfil, idChofer, descripcion);
+                agregarUsuario(apellido, nombre, usuario, idperfil, idChofer, descripcion, idPropietario);
                 alertify.success('Agregado '+apellido+', '+nombre);
             }else{
-                actualizarUsuario(idusuario,apellido,nombre,usuario, idperfil, idChofer, descripcion);
+                actualizarUsuario(idusuario,apellido,nombre,usuario, idperfil, idChofer, descripcion, idPropietario);
                 alertify.success('Actualizado '+apellido+', '+nombre);
             }
             $('#adm_usuarios').modal('hide');
@@ -114,14 +120,15 @@ function cargarFila(objeto){
         '<td>'+objeto.nombre+'</td>'+
         '<td>'+objeto.usuario+'</td>'+
         '<td>'+objeto.descripcion+'<input type="hidden" value="pid'+objeto.perfilid+'">'+'</td>'+
-        '<td>'+(objeto.idChofer==null?" ":objeto.idChofer)+'<input type="hidden" value="'+(objeto.idChofer==null?0:objeto.idChofer)+'">'+'</td>'+
+        '<td class="text-center">'+(objeto.idChofer==null?" ":objeto.idChofer)+'<input type="hidden" value="'+(objeto.idChofer==null?0:objeto.idChofer)+'">'+'</td>'+
+        '<td class="text-center">'+(objeto.idPropietario==null?" ":objeto.idPropietario)+'<input type="hidden" value="'+(objeto.idPropietario==null?0:objeto.idPropietario)+'">'+'</td>'+
         '<td>'+'<button class="btn btn-dark btn_editar" title="Modificar Usuario" data-toggle="modal"><i class="fas fa-edit"></i></button>'+'</td>'+
         '<td>'+'<button class="btn btn-danger btn_borrar" title="Eliminar Usuario"><i class="fas fa-trash-alt"></i></button>'+'</td>'+
         '<input type="hidden" value="uid'+objeto.usuarioid+'">'+
         '</tr>');
 }
 
-function agregarUsuario(apellido, nombre, usuario, idperfil, idChofer, descripcion){
+function agregarUsuario(apellido, nombre, usuario, idperfil, idChofer, descripcion, idPropietario){
     $.ajax({
         type:'POST',
         url: 'scripts/apiusuario.php',
@@ -130,11 +137,12 @@ function agregarUsuario(apellido, nombre, usuario, idperfil, idChofer, descripci
                 'nombre': nombre,
                 'usuario': usuario,
                 'perfilid': idperfil,
-                'idChofer':idChofer},
+                'idChofer':idChofer,
+                'idPropietario': idPropietario},
         dataType: 'json',
         success: function(response){
             if(response.exito==true){
-                var ousuario = {'apellido':apellido, 'nombre':nombre, 'usuario':usuario, 'perfilid': idperfil, 'idChofer':idChofer, 'usuarioid':response.id,'descripcion':descripcion};
+                var ousuario = {'apellido':apellido, 'nombre':nombre, 'usuario':usuario, 'perfilid': idperfil, 'idChofer':idChofer, 'usuarioid':response.id,'descripcion':descripcion, 'idPropietario':idPropietario};
                 cargarFila(ousuario);
             }else{
                 alertify.error('Hubo un Error');
@@ -147,7 +155,7 @@ function agregarUsuario(apellido, nombre, usuario, idperfil, idChofer, descripci
     });
 }
 
-function actualizarUsuario(idusuario, apellido, nombre, usuario, idperfil, idChofer, descripcion){
+function actualizarUsuario(idusuario, apellido, nombre, usuario, idperfil, idChofer, descripcion, idPropietario){
     $.ajax({
         type: 'POST',
         url: 'scripts/apiusuario.php',
@@ -157,11 +165,12 @@ function actualizarUsuario(idusuario, apellido, nombre, usuario, idperfil, idCho
                 'usuario':usuario,
                 'perfilid':idperfil,
                 'idChofer': idChofer,
-                'usuarioid':idusuario},
+                'usuarioid':idusuario,
+                'idPropietario': idPropietario},
         datatype: 'json',
         success: function(response){
             if(response.exito==true){
-                var ousuario = {'apellido':apellido, 'nombre':nombre, 'usuario':usuario, 'perfilid': idperfil, 'idChofer':idChofer, 'usuarioid':idusuario,'descripcion':descripcion};
+                var ousuario = {'apellido':apellido, 'nombre':nombre, 'usuario':usuario, 'perfilid': idperfil, 'idChofer':idChofer, 'usuarioid':idusuario,'descripcion':descripcion, 'idPropietario':idPropietario};
                 actualizarFila(ousuario);
             }else{
                 alertify.error('Hubo un Error');
@@ -177,9 +186,11 @@ function actualizarFila(objeto){
     input[0].parentNode.childNodes[1].innerText=objeto.nombre;
     input[0].parentNode.childNodes[2].innerText=objeto.usuario;
     input[0].parentNode.childNodes[3].childNodes[0].data=objeto.descripcion;
-    input[0].parentNode.childNodes[3].childNodes[1].value='pid'+objeto.idperfil;
-    input[0].parentNode.childNodes[4].childNodes[0].data=(objeto.idChofer==null?" ":objeto.idChofer);
+    input[0].parentNode.childNodes[3].childNodes[1].value='pid'+objeto.perfilid;
+    input[0].parentNode.childNodes[4].childNodes[0].data=(objeto.idChofer==null||objeto.idChofer==0?" ":objeto.idChofer);
     input[0].parentNode.childNodes[4].childNodes[1].value=(objeto.idChofer==null?0:objeto.idChofer);
+    input[0].parentNode.childNodes[5].childNodes[0].data=(objeto.idPropietario==null||objeto.idPropietario==0?" ":objeto.idPropietario);
+    input[0].parentNode.childNodes[5].childNodes[1].value=(objeto.idPropietario==null?0:objeto.idPropietario);
 }
 
 function borrarUsuario(id, trBorrar){
@@ -256,8 +267,32 @@ function traerChoferes(){
     });
 }
 
+function traerPropietarios(){
+    $.ajax({
+        type: 'POST',
+        url: 'scripts/apipropietarios.php',
+        data: {'param':1},
+        dataType: 'json',
+        success: function(response){
+            if(response.exito){
+                $("#select_propietarios").append('<option value="0">Seleccionar el propietario</option>');
+                if(response[0].length > 0){
+                    response[0].forEach(propietario => {
+                        $("#select_propietarios").append('<option value="'+propietario.idPropietario+'">'+propietario.ayn+'</option>');
+                    });
+                }
+            }else{
+                console.error(response.msg);
+            }
+        },
+        error: function(response){
+            console.error(response);
+        }
+    });
+}
+
 function confirmarBorrado(botonBorrar){
-    var id = botonBorrar.parentNode.parentNode.childNodes[7].value.slice(3);
+    var id = botonBorrar.parentNode.parentNode.childNodes[8].value.slice(3);
     var trBorrar = botonBorrar.parentNode.parentNode;
     alertify.confirm('Eliminar', 'Esta seguro de que desea eliminarlo?', function(){
         borrarUsuario(id, trBorrar);

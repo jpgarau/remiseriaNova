@@ -89,6 +89,9 @@ switch ($tarea) {
         $ovehiculo = new Vehiculo;
         $retorno = $ovehiculo->listarVehiculosHabilitados();
         break;
+    case 7:
+        $ovehiculo = new Vehiculo;
+        $retorno = $ovehiculo->listarVehiculosPropietario();
     default:
         break;
 }

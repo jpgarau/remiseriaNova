@@ -13,6 +13,7 @@ class Usuario
     private $perfilId;
     private $idChofer;
     private $estado;
+    private $idPropietario;
 
     public function __construct()
     {
@@ -26,6 +27,7 @@ class Usuario
         $this->perfilId = 0;
         $this->idChofer = null;
         $this->estado = 0;
+        $this->idPropietario = 0;
     }
 
     //getters
@@ -57,6 +59,10 @@ class Usuario
     public function getIdChofer()
     {
         return $this->idChofer;
+    }
+    public function getIdPropietario()
+    {
+        return $this->idPropietario;
     }
     public function getEstado()
     {
@@ -133,9 +139,19 @@ class Usuario
         $this->idChofer = null;
         $error = false;
         $idChofer = filter_var($idChofer, FILTER_VALIDATE_INT);
-        if ($idChofer === FALSE) $error = true;
+        if ($idChofer === FALSE || $idChofer === 0) $error = true;
         if (!$error) {
             $this->idChofer = $idChofer;
+        }
+    }
+    public function setIdPropietario($idPropietario)
+    {
+        $this->idPropietario = null;
+        $error = false;
+        $idPropietario = filter_var($idPropietario, FILTER_VALIDATE_INT);
+        if ($idPropietario === FALSE || $idPropietario === 0) $error = true;
+        if (!$error) {
+            $this->idPropietario = $idPropietario;
         }
     }
     public function setEstado($estado)
@@ -155,13 +171,14 @@ class Usuario
             $clave = $this->getClave();
             $perfilId = $this->getPerfilId();
             $idChofer = $this->getIdChofer();
+            $idPropietario = $this->getIdPropietario();
             $estado = 50;
-            $sql = "INSERT INTO usuarios (nombre, apellido, usuario, clave, perfilId, idChofer, estado) VALUES (?,?,?,?,?,?,?)";
+            $sql = "INSERT INTO usuarios (nombre, apellido, usuario, clave, perfilId, idChofer, idPropietario, estado) VALUES (?,?,?,?,?,?,?,?)";
             $mysqli = Conexion::abrir();
             $mysqli->set_charset("utf8");
             $stmt = $mysqli->prepare($sql);
             if ($stmt !== FALSE) {
-                $stmt->bind_param('ssssiii', $nombre, $apellido, $usuario, $clave, $perfilId, $idChofer, $estado);
+                $stmt->bind_param('ssssiiii', $nombre, $apellido, $usuario, $clave, $perfilId, $idChofer, $idPropietario, $estado);
                 $stmt->execute();
                 $id = $mysqli->insert_id;
                 $stmt->close();
@@ -183,13 +200,14 @@ class Usuario
             $usuario = $this->getUsuario();
             $perfilId = $this->getPerfilId();
             $idChofer = $this->getIdChofer();
+            $idPropietario = $this->getIdPropietario();
             $usuarioId = $this->getUsuarioId();
-            $sql = "UPDATE usuarios SET nombre=?, apellido=?, usuario=?, perfilId=?, idChofer=? WHERE usuarioId=?";
+            $sql = "UPDATE usuarios SET nombre=?, apellido=?, usuario=?, perfilId=?, idChofer=?, idPropietario=? WHERE usuarioId=?";
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
             if ($stmt !== FALSE) {
-                $stmt->bind_param('sssiii', $nombre, $apellido, $usuario, $perfilId, $idChofer, $usuarioId);
+                $stmt->bind_param('sssiiii', $nombre, $apellido, $usuario, $perfilId, $idChofer, $idPropietario,  $usuarioId);
                 $stmt->execute();
                 $stmt->close();
                 $arr = array('exito' => true, 'msg' => '');
@@ -227,7 +245,7 @@ class Usuario
         $arr = array('exito' => false, 'msg' => 'Error al buscar');
         try {
             $usuarioId = $this->getUsuarioId();
-            $sql = "SELECT nombre, apellido, usuario, clave, perfilId, idChofer, estado FROM usuarios WHERE usuarioId";
+            $sql = "SELECT nombre, apellido, usuario, clave, perfilId, idChofer, idPropietario, estado FROM usuarios WHERE usuarioId";
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
@@ -251,7 +269,7 @@ class Usuario
         $arr = array('exito' => false, 'msg' => 'Error al listar');
         try {
             $perfilid = $_SESSION['userProfile']['perfilid'];
-            $sql = "SELECT usuarios.usuarioid, usuarios.apellido, usuarios.nombre, usuarios.usuario, usuarios.perfilid, usuarios.idChofer, perfil.descripcion FROM usuarios, perfil WHERE  usuarios.perfilid=perfil.perfilid AND usuarios.perfilid >= ? AND usuarios.estado BETWEEN 0 AND 90";
+            $sql = "SELECT usuarios.usuarioid, usuarios.apellido, usuarios.nombre, usuarios.usuario, usuarios.perfilid, usuarios.idChofer, usuarios.idPropietario, perfil.descripcion FROM usuarios, perfil WHERE  usuarios.perfilid=perfil.perfilid AND usuarios.perfilid >= ? AND usuarios.estado BETWEEN 0 AND 90";
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);

@@ -23,6 +23,7 @@ if(isset($_POST['usuario'])){$usuario = $_POST['usuario'];}
 if(isset($_POST['perfilid'])){$perfilid = $_POST['perfilid'];}
 if(isset($_POST['usuarioid'])){$usuarioid = $_POST['usuarioid'];}
 if(isset($_POST['idChofer'])){$idChofer = $_POST['idChofer'];}
+if(isset($_POST['idPropietario'])){$idPropietario = $_POST['idPropietario'];}
 
 switch ($tarea) {
     case 1:
@@ -36,6 +37,7 @@ switch ($tarea) {
         $ousuario->setUsuario($usuario);
         $ousuario->setPerfilId($perfilid);
         $ousuario->setIdChofer($idChofer);
+        $ousuario->setIdPropietario($idPropietario);
         $retorno = $ousuario->agregarUsuario();
         break;
     case 3:
@@ -45,6 +47,7 @@ switch ($tarea) {
         $ousuario->setUsuario($usuario);
         $ousuario->setPerfilId($perfilid);
         $ousuario->setIdChofer($idChofer);
+        $ousuario->setIdPropietario($idPropietario);
         $ousuario->setUsuarioId($usuarioid);
         $retorno = $ousuario->modificarUsuario();
         break;
