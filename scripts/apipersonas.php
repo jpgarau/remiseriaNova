@@ -51,6 +51,9 @@ if (isset($_POST['cuit'])) {
 if (isset($_POST['observa'])) {
     $observa = $_POST['observa'];
 }
+if (isset($_POST['telid'])) {
+    $telid = $_POST['telid'];
+}
 if (isset($_POST['idPersonas'])) {
     $idPersonas = $_POST['idPersonas'];
 }
@@ -73,6 +76,7 @@ switch ($tarea) {
         $opersona->setIva($iva);
         $opersona->setCuit($cuit);
         $opersona->setObserva($observa);
+        $opersona->setTelId($telid);
         $retorno = $opersona->agregarPersona();
         break;
     case 3:
@@ -88,6 +92,7 @@ switch ($tarea) {
         $opersona->setIva($iva);
         $opersona->setCuit($cuit);
         $opersona->setObserva($observa);
+        $opersona->setTelId($telid);
         $opersona->setIdPersonas($idPersonas);
         $retorno = $opersona->modificarPersona();
         break;

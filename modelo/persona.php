@@ -15,6 +15,7 @@ class Persona{
     private $cuit;
     private $idlocalidad;
     private $observa;
+    private $telid;
 
     public function __construct(){
         $driver = new mysqli_driver();
@@ -31,6 +32,7 @@ class Persona{
         $this->cuit = 0;
         $this->idlocalidad = 0;
         $this->observa = '';
+        $this->telid = null;
     }
 
     //getters
@@ -70,6 +72,9 @@ class Persona{
     }
     public function getObserva(){
         return $this->observa;
+    }
+    public function getTelId(){
+        return $this->telid;
     }
 
     //setters
@@ -197,6 +202,16 @@ class Persona{
         }
         return $error;
     }
+    public function setTelId($telid){
+        $this->telid = null;
+        $error = false;
+        $telid = filter_var($telid, FILTER_VALIDATE_INT);
+        if($telid===FALSE || $telid < 1) $error = true;
+        if(!$error){
+            $this->telid = $telid;
+        }
+        return $error;
+    }
 
     public function agregarPersona(){
         $arr = array('exito'=>false, 'msg'=>'Error en agregar Persona');
@@ -212,14 +227,15 @@ class Persona{
             $cuit = $this->getCuit();
             $idlocalidad = $this->getIdLocalidad();
             $observa = $this->getObserva();
+            $telid = $this->getTelId();
             $cuitvalido = $iva==1?false:is_null($cuit);
             if(!(is_bool($ayn) || $cuitvalido)){
-                $sql = "INSERT INTO personas (ayn, telefono, domicilio, tipodoc, nrodoc, nacido, email, iva, cuit, idlocalidad, observa) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                $sql = "INSERT INTO personas (ayn, telefono, domicilio, tipodoc, nrodoc, nacido, email, iva, cuit, idlocalidad, observa, telid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
                 $mysqli = Conexion::abrir();
                 $mysqli->set_charset("utf8");
                 $stmt = $mysqli->prepare($sql);
                 if($stmt!==FALSE){
-                    $stmt->bind_param('sssssssisis',$ayn,$telefono,$domicilio,$tipodoc,$nrodoc,$nacido,$email,$iva,$cuit,$idlocalidad, $observa);
+                    $stmt->bind_param('sssssssisisi',$ayn,$telefono,$domicilio,$tipodoc,$nrodoc,$nacido,$email,$iva,$cuit,$idlocalidad, $observa, $telid);
                     $stmt->execute();
                     $stmt->close();
                     $idPersona = $mysqli->insert_id;
@@ -247,13 +263,14 @@ class Persona{
             $idlocalidad = $this->getIdLocalidad();
             $idPersonas = $this->getIdPersonas();
             $observa = $this->getObserva();
+            $telid = $this->getTelId();
             if(!(is_bool($ayn))){
-                $sql = "UPDATE personas SET ayn=?, telefono=?, domicilio=?, tipodoc=?, nrodoc=?, nacido=?, email=?, iva=?, cuit=?, idlocalidad=?, observa=? WHERE idPersonas=?";
+                $sql = "UPDATE personas SET ayn=?, telefono=?, domicilio=?, tipodoc=?, nrodoc=?, nacido=?, email=?, iva=?, cuit=?, idlocalidad=?, observa=?, telid=? WHERE idPersonas=?";
                 $mysqli = Conexion::abrir();
                 $mysqli->set_charset('utf8');
                 $stmt = $mysqli->prepare($sql);
                 if($stmt!==FALSE){
-                    $stmt->bind_param('sssssssisisi', $ayn, $telefono, $domicilio, $tipodoc, $nrodoc, $nacido, $email, $iva, $cuit, $idlocalidad,$observa,$idPersonas);
+                    $stmt->bind_param('sssssssisisii', $ayn, $telefono, $domicilio, $tipodoc, $nrodoc, $nacido, $email, $iva, $cuit, $idlocalidad, $observa, $telid, $idPersonas);
                     $stmt->execute();
                     $stmt->close();
                     $mysqli->close();
@@ -288,7 +305,7 @@ class Persona{
         $arr = array('exito'=>false, 'msg'=>'Hubo un error en la busqueda');
         try {
             $idPersonas = $_SESSION['$sidPersonas'];
-            $sql = "SELECT ayn, telefono, domicilio, tipodoc, nrodoc, nacido, email, iva, cuit, idlocalidad, idtipopersona, observa FROM personas WHERE idPersonas=?";
+            $sql = "SELECT ayn, telefono, domicilio, tipodoc, nrodoc, nacido, email, iva, cuit, idlocalidad, idtipopersona, observa, telid FROM personas WHERE idPersonas=?";
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);

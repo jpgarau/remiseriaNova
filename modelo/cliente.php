@@ -93,7 +93,8 @@ class Cliente extends Persona{
         $arr = array('exito'=>false, 'msg'=>'Hubo un error en la busqueda');
         try{
 			$sql = "SELECT * FROM personas, clientes WHERE idClientes = ? AND personas.idPersonas = clientes.idClientes";
-			$mysqli = Conexion::abrir();
+            $mysqli = Conexion::abrir();
+            $mysqli->set_charset("utf8");
 			$stmt = $mysqli->prepare($sql);
 			if($stmt!==FALSE){
 				$stmt->bind_param('i',$idClientes);

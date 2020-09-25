@@ -57,6 +57,9 @@ if (isset($_POST['idClientesActual'])) {
 if (isset($_POST['observa'])){
     $observa = $_POST['observa'];
 }
+if (isset($_POST['telid'])){
+    $telid = $_POST['telid'];
+}
 
 switch ($tarea) {
     case 1:
@@ -76,6 +79,7 @@ switch ($tarea) {
         $ocliente->setIva($iva);
         $ocliente->setCuit($cuit);
         $ocliente->setObserva(($observa));
+        $ocliente->setTelId(($telid));
         $retorno = $ocliente->agregarCliente();
         break;
     case 3:
@@ -93,6 +97,7 @@ switch ($tarea) {
         $ocliente->setIdClientes($idClientes);
         $ocliente->setIdPersonas($idClientes);
         $ocliente->setObserva($observa);
+        $ocliente->setTelId(($telid));
         $retorno = $ocliente->modificarCliente();
         break;
     case 4:

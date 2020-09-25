@@ -72,6 +72,12 @@ if(isset($_SESSION['usuario'])){
         <strong id="errorCuit">* Este campo no debe estar vacio.</strong>
     </div>
 </div>
+<div class="input-group float-left mb-2 col-sm-6 col-md-5 col-lg-4">
+    <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fab fa-telegram-plane"></i></span>
+    </div>
+    <select name="cmbTelegram" id="cmbTelegram" class="form-control" title="Seleccione id o usuario de Telegram"></select>
+</div>
 <?php 
 }else{
     header('HTTP/1.1 401');

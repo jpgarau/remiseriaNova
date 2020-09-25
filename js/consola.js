@@ -1125,7 +1125,6 @@ function quitarPila(idServicio) {
 		dataType: "json",
 		success: function (response) {
 			if (response.exito) {
-				console.log(response);
 			} else {
 				console.error(response.msg);
 			}

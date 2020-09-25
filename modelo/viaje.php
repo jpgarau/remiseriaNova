@@ -226,7 +226,6 @@ class Viaje
                 $stmt->execute();
                 $stmt->close();
                 $idViaje = $mysqli->insert_id;
-                $mysqli->close();
                 if($idCliente>0 && $importe>0){
                     $octacte = new Ctacte();
                     $octacte->setSigla("VI");
@@ -237,7 +236,17 @@ class Viaje
                     $octacte->setImporte($importe);
                     $octacte->agregarViajeACtaCte();
                 }
-                $arr = array('exito'=>true, 'msg'=>'');
+                $sql = 'SELECT personas.telid FROM servicio LEFT JOIN personas on servicio.idChofer=personas.idPersonas WHERE servicio.idServicio=?';
+                $stmt2 = $mysqli->prepare($sql);
+                if($stmt2!==FALSE){
+                    $stmt2->bind_param('i', $idServicio);
+                    $stmt2->execute();
+                    $rs = $stmt2->get_result();
+                    $stmt2->close();
+                    $mysqli->close();
+                    $id = $rs->fetch_assoc();
+                    $arr = array('exito'=>true, 'msg'=>'', 'id'=>$id['telid']);
+                }
             }
         } catch (Exception $e) {
             $arr['msg'] = $e->getMessage();
@@ -327,8 +336,17 @@ class Viaje
                 $stmt->bind_param('ssisssiii',$fecha, $hora, $idCliente, $origen, $destino, $observa, $idReserva, $idServicio, $estado);
                 $stmt->execute();
                 $stmt->close();
-                $mysqli->close();
-                $arr = array('exito'=>true, 'msg'=>'');
+                $sql = 'SELECT personas.telid FROM servicio LEFT JOIN personas on servicio.idChofer=personas.idPersonas WHERE servicio.idServicio=?';
+                $stmt2 = $mysqli->prepare($sql);
+                if($stmt2!==FALSE){
+                    $stmt2->bind_param('i', $idServicio);
+                    $stmt2->execute();
+                    $rs = $stmt2->get_result();
+                    $stmt2->close();
+                    $mysqli->close();
+                    $id = $rs->fetch_assoc();
+                    $arr = array('exito'=>true, 'msg'=>'', 'id'=>$id['telid']);
+                }
             }
         } catch (Exception $e) {
             $arr['msg'] = $e->getMessage();

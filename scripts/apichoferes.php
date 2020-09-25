@@ -57,6 +57,9 @@ if (isset($_POST['nrolicencia'])) {
 if (isset($_POST['observa'])) {
     $observa = $_POST['observa'];
 }
+if (isset($_POST['telid'])) {
+    $telid = $_POST['telid'];
+}
 if (isset($_POST['idchofer'])) {
     $idchofer = $_POST['idchofer'];
 }
@@ -84,6 +87,7 @@ switch ($tarea) {
         $ochofer->setComision($comision);
         $ochofer->setNroLicencia($nrolicencia);
         $ochofer->setObserva($observa);
+        $ochofer->setTelId($telid);
         $retorno = $ochofer->agregarChofer();
         break;
     case 3:
@@ -101,6 +105,7 @@ switch ($tarea) {
         $ochofer->setComision($comision);
         $ochofer->setNroLicencia($nrolicencia);
         $ochofer->setObserva($observa);
+        $ochofer->setTelId($telid);
         $ochofer->setIdChofer($idchofer);
         $ochofer->setIdPersonas($idchofer);
         $retorno = $ochofer->modificarChofer();
@@ -113,6 +118,7 @@ switch ($tarea) {
     case 5:
         $ochofer = new Chofer();
         $retorno = $ochofer->buscarChofer($idchofer);
+        $retorno = array('exito'=>false);
         break;
     case 6:
         $ochofer = new Chofer();

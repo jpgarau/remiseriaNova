@@ -127,7 +127,8 @@ class Chofer extends Persona{
         $arr = array('exito'=>false, 'msg'=>'Hubo un error en la busqueda del chofer');
         try{
 			$sql = "SELECT * FROM personas, choferes WHERE idChofer = ? AND personas.idPersonas = choferes.idChofer";
-			$mysqli = Conexion::abrir();
+            $mysqli = Conexion::abrir();
+            $mysqli->set_charset("utf8");
 			$stmt = $mysqli->prepare($sql);
 			if($stmt!==FALSE){
 				$stmt->bind_param('i',$idChofer);

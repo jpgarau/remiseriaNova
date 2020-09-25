@@ -57,6 +57,9 @@ if (isset($_POST['idPropietarioActual'])) {
 if (isset($_POST['observa'])){
     $observa = $_POST['observa'];
 }
+if (isset($_POST['telid'])){
+    $telid = $_POST['telid'];
+}
 
 switch ($tarea) {
     case 1:
@@ -76,6 +79,7 @@ switch ($tarea) {
         $opropietario->setIva($iva);
         $opropietario->setCuit($cuit);
         $opropietario->setObserva($observa);
+        $opropietario->setTelId(($telid));
         $retorno = $opropietario->agregarPropietario();
         break;
     case 3:
@@ -93,6 +97,7 @@ switch ($tarea) {
         $opropietario->setIdPropietario($idPropietario);
         $opropietario->setIdPersonas($idPropietario);
         $opropietario->setObserva($observa);
+        $opropietario->setTelId(($telid));
         $retorno = $opropietario->modificarPropietario();
         break;
     case 4:

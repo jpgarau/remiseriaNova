@@ -34,6 +34,7 @@ $(document).ready(function () {
 		$("#adm_choferes .modal-body input#comis").val("");
 		$("#adm_choferes .modal-body input#licencia").val("");
 		$("#adm_choferes .modal-body #observaciones").val("");
+		$("#adm_choferes .modal-body #cmbTelegram").val(0);
 		$("#adm_choferes .modal-body input#idchofer").val("Agregar");
 		$("#adm_choferes").modal("show");
 	});
@@ -98,6 +99,7 @@ $(document).ready(function () {
 					response[0].nrolicencia
 				);
 				$("#adm_choferes .modal-body #observaciones").val(response[0].observa);
+				$("#adm_choferes .modal-body #cmbTelegram").val(response[0].telid==null?0:response[0].telid);
 				$("#adm_choferes .modal-body input#idchofer").val(idchofer);
 				$("#adm_choferes").modal("show");
 			},
@@ -128,6 +130,7 @@ $(document).ready(function () {
 		var comis = $("#comis").val();
 		var licencia = $("#licencia").val();
 		var observaciones = $("#observaciones").val();
+		var telid = $("#cmbTelegram").val();
 		var idchofer = $("#idchofer").val();
 		var valido = 0;
 		valido = validarApynom(apynom) + validaCuit(cuit);
@@ -146,7 +149,8 @@ $(document).ready(function () {
 					cuit,
 					comis,
 					licencia,
-					observaciones
+					observaciones,
+					telid
 				);
 			} else {
 				if ($("#numdni").prop("disabled")) {
@@ -167,6 +171,7 @@ $(document).ready(function () {
 					comis,
 					licencia,
 					observaciones,
+					telid,
 					idchofer
 				);
 			}
@@ -283,7 +288,8 @@ function agregarChofer(
 	cuit,
 	comis,
 	licencia,
-	observaciones
+	observaciones,
+	telid
 ) {
 	if (cuit!=""){
 		cuit = parseInt(cuit.toString().replace(/[-_]/g, ""));
@@ -306,6 +312,7 @@ function agregarChofer(
 			comision: comis,
 			nrolicencia: licencia,
 			observa: observaciones,
+			telid: telid
 		},
 		dataType: "json",
 		success: function (response) {
@@ -344,6 +351,7 @@ function actualizarChofer(
 	comis,
 	licencia,
 	observaciones,
+	telid,
 	idchofer
 ) {
 	if (cuit!=""){
@@ -367,6 +375,7 @@ function actualizarChofer(
 			comision: comis,
 			nrolicencia: licencia,
 			observa: observaciones,
+			telid: telid,
 			idchofer: idchofer,
 		},
 		dataType: "json",
@@ -603,6 +612,8 @@ function validarNumdni(numdni) {
 							);
 							$("#adm_choferes .modal-body #cmbIva").val(response[0].iva);
 							$("#adm_choferes .modal-body input#cuit").val(cuit);
+							$("#adm_choferes .modal-body #observaciones").val(response[0].observa);
+							$("#adm_choferes .modal-body #cmbTelegram").val(response[0].telid==null?0:response[0].telid);
 							$("#idchofer").val(response[0].idPersonas);
 							$("#numdni").prop("disabled", "yes");
 						},
@@ -657,6 +668,8 @@ function validarNumdni(numdni) {
 							);
 							$("#adm_choferes .modal-body #cmbIva").val(response[0].iva);
 							$("#adm_choferes .modal-body input#cuit").val(cuit);
+							$("#adm_choferes .modal-body #observaciones").val(response[0].observa);
+							$("#adm_choferes .modal-body #cmbTelegram").val(response[0].telid==null?0:response[0].telid)
 							$("#idchofer").val(response[0].idPersonas);
 							$("#numdni").prop("disabled", "yes");
 						

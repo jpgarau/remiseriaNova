@@ -213,4 +213,27 @@ class Servicio{
         }
         return $arr;
     }
+
+    public function buscarTel(){
+        $arr = array('exito'=>false, 'msg'=>'Error al buscar');
+        try {
+            $idServicio = $this->getIdServicio();
+            $sql = 'SELECT personas.telefono FROM servicio LEFT JOIN personas on servicio.idChofer = personas.idPersonas WHERE servicio.idServicio=?';
+            $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
+            $stmt = $mysqli->prepare($sql);
+            if($stmt!==FALSE){
+                $stmt->bind_param('i', $idServicio);
+                $stmt->execute();
+                $rs = $stmt->get_result();
+                $stmt->close();
+                $mysqli->close();
+                $tel = $rs->fetch_assoc();
+                $arr = array('exito'=>true, 'msg'=>'', $tel);
+            }
+        } catch (Exception $e) {
+            $arr['msg'] = $e->getMessage();
+        }
+        return $arr;
+    }
 }

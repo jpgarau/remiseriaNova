@@ -104,6 +104,7 @@ class Propietario extends Persona
         try {
             $sql = "SELECT * FROM personas, propietarios WHERE idPropietario = ? AND personas.idPersonas = propietarios.idPropietario";
             $mysqli = Conexion::abrir();
+            $mysqli->set_charset("utf8");
             $stmt = $mysqli->prepare($sql);
             if ($stmt !== FALSE) {
                 $stmt->bind_param('i', $idPropietario);

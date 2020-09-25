@@ -28,6 +28,7 @@ $(document).ready(function () {
 		$("#adm_propietarios .modal-body #cmbIva").val($("#cmbIva option").val());
         $("#adm_propietarios .modal-body input#cuit").val("");
 		$("#adm_propietarios .modal-body #observaciones").val("");
+		$("#adm_propietarios .modal-body #cmbTelegram").val(0);
 		$("#adm_propietarios .modal-body input#idPropietario").val("Agregar");
 		$("#adm_propietarios").modal("show");
 	});
@@ -83,6 +84,7 @@ $(document).ready(function () {
 				$("#adm_propietarios .modal-body #cmbIva").val(response[0].iva);
 				$("#adm_propietarios .modal-body input#cuit").val(cuit);
 				$("#adm_propietarios .modal-body #observaciones").val(response[0].observa);
+				$("#adm_propietarios .modal-body #cmbTelegram").val(response[0].telid==null?0:response[0].telid);
 				$("#adm_propietarios .modal-body input#idPropietario").val(idPropietario);
 				$("#adm_propietarios").modal("show");
 			},
@@ -109,6 +111,7 @@ $(document).ready(function () {
 		var cuit = $("#cuit").val();
         cuit=cuit.toString().replace(/[-_]/g, "");
 		var observaciones = $("#observaciones").val();
+		var telid = $("#cmbTelegram").val();
 		var idPropietario = $("#idPropietario").val();
 		var valido = 0;
 		valido = validarApynom(apynom) + validaCuit(cuit);
@@ -125,7 +128,8 @@ $(document).ready(function () {
 					fecnac,
                     cmbIva,
                     observaciones,
-					cuit
+					cuit,
+					telid
 				);
 			} else {
 				if ($("#numdni").prop("disabled")) {
@@ -143,7 +147,8 @@ $(document).ready(function () {
 					fecnac,
 					cmbIva,
                     cuit,
-                    observaciones,
+					observaciones,
+					telid,
 					idPropietario
 				);
 			}
@@ -248,7 +253,8 @@ function agregarPropietario(
 	fecnac,
     cmbIva,
     observaciones,
-	cuit
+	cuit,
+	telid
 ) {
 	if (cuit!=""){
 		cuit = parseInt(cuit.toString().replace(/[-_]/g, ""));
@@ -268,7 +274,8 @@ function agregarPropietario(
 			nacido: fecnac,
             iva: cmbIva,
             observa:observaciones,
-			cuit: cuit
+			cuit: cuit,
+			telid: telid
 		},
 		dataType: "json",
 		success: function (response) {
@@ -304,7 +311,8 @@ function actualizarPropietario(
 	fecnac,
 	cmbIva,
     cuit,
-    observaciones,
+	observaciones,
+	telid,
 	idPropietario
 ) {
 	if (cuit!=""){
@@ -325,7 +333,8 @@ function actualizarPropietario(
 			nacido: fecnac,
 			iva: cmbIva,
             cuit: cuit,
-            observa: observaciones, 
+			observa: observaciones,
+			telid: telid,
 			idPropietario: idPropietario,
 		},
 		dataType: "json",
@@ -550,6 +559,8 @@ function validarNumdni(numdni) {
 							);
 							$("#adm_propietarios .modal-body #cmbIva").val(response[0].iva);
 							$("#adm_propietarios .modal-body input#cuit").val(cuit);
+							$("#adm_propietarios .modal-body #observaciones").val(response[0].observa);
+							$("#adm_propietarios .modal-body #cmbTelegram").val(response[0].telid==null?0:response[0].telid);
 							$("#idPropietario").val(response[0].idPersonas);
 							$("#numdni").prop("disabled", "yes");
 						},
@@ -604,6 +615,8 @@ function validarNumdni(numdni) {
 							);
 							$("#adm_propietarios .modal-body #cmbIva").val(response[0].iva);
 							$("#adm_propietarios .modal-body input#cuit").val(cuit);
+							$("#adm_propietarios .modal-body #observaciones").val(response[0].observa);
+							$("#adm_propietarios .modal-body #cmbTelegram").val(response[0].telid==null?0:response[0].telid);
 							$("#idPropietario").val(response[0].idPersonas);
 							$("#numdni").prop("disabled", "yes");
 

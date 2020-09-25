@@ -81,6 +81,9 @@ switch ($tarea) {
         $oviaje->setIdReserva($idReserva);
         $oviaje->setIdServicio($idServicio);
         $retorno = $oviaje->asignarViaje();
+        if($retorno['id']>0){
+            enviarTE($retorno['id'], $origen);
+        }
         break;
     case 3:
         $oviaje = new Viaje;
@@ -94,6 +97,10 @@ switch ($tarea) {
         $oviaje->setHoraLibre($horaLibre);
         $oviaje->setImporte($importe);
         $retorno = $oviaje->agregarViaje();
+        if($retorno['id']>0){
+
+            enviarTE($retorno['id'], $origen);
+        }
         break;
     case 4:
         $oviaje = new Viaje;
@@ -142,3 +149,21 @@ function peticion_ajax()
 {
     return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
 }
+
+
+
+function enviarTE($id, $msg){
+    $token = "1193011370:AAGaX5JUWguGXf74ehEnr-dqqmoM0RLYIn0";
+    $urlMsg = "https://api.telegram.org/bot{$token}/sendMessage";
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $urlMsg);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "chat_id={$id}&parse_mode=HTML&text=$msg");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+    $server_output = curl_exec($ch);
+    curl_close($ch);
+}
+
+// ALTER TABLE `personas` ADD `telid` INT(12) NULL DEFAULT NULL AFTER `observa`; 
