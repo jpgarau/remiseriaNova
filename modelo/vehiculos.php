@@ -282,7 +282,7 @@ class Vehiculo
             $idVehiculos = $this->getIdVehiculo();
             $sql = "SELECT vehiculos.marca,vehiculos.anio,vehiculos.patente,vehiculos.falta, vehiculos.habilita, vehiculos.vtoseguro, vehiculos.titular, vehiculos.observa, personas.ayn FROM vehiculos, personas WHERE vehiculos.idVehiculos=? AND vehiculos.titular = personas.idPersonas";
             $mysqli = Conexion::abrir();
-            $mysqli->set_charset("UTF8");
+            $mysqli->set_charset("utf8");
             $stmt = $mysqli->prepare($sql);
             if($stmt!==FALSE){
                 $stmt->bind_param('i',$idVehiculos);

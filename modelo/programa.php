@@ -194,6 +194,7 @@ class Programa{
             $programaid = $busco==="N"?$_SESSION['sprogramaid']:$busco;
             $sql = "SELECT nombre, link, padre, esopcion, orden, estado FROM programa WHERE programaid = ?";
             $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
             if($stmt!==FALSE){
                 $stmt->bind_param('i',$programaid);
@@ -223,6 +224,7 @@ class Programa{
             $arrprogramas = array();
             $sql = "SELECT programaid, nombre, link, padre, esopcion, orden, estado FROM programa WHERE estado = 0 ORDER BY orden";
             $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
             if($stmt!==FALSE){
                 $stmt->execute();
@@ -243,6 +245,7 @@ class Programa{
             $perfilid = $_SESSION["sperfilid"];
             $sql = "SELECT programaid, nombre FROM programa WHERE estado = 0 AND programaid NOT IN (SELECT programaid FROM perfilprograma WHERE perfilid=?)";
             $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
             if($stmt!==FALSE){
                 $stmt->bind_param('i',$perfilid);

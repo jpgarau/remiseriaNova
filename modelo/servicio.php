@@ -144,7 +144,7 @@ class Servicio{
             $arrservicios = array();
             $sql = "SELECT servicio.idServicio, vehiculos.idVehiculos, vehiculos.marca, vehiculos.patente, personas.ayn, choferes.idChofer FROM servicio, vehiculos, personas, choferes WHERE servicio.estado != 0 AND vehiculos.idVehiculos = servicio.idVehiculo AND choferes.idChofer=servicio.idChofer AND personas.idPersonas=servicio.idChofer ORDER BY servicio.idVehiculo";
             $mysqli = Conexion::abrir();
-            $mysqli->set_charset('UTF8');
+            $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
             if($stmt!==FALSE){
                 $stmt->execute();

@@ -274,7 +274,7 @@ function cargarFila(objeto) {
 	);
 }
 
-
+// agregar chofer a la tabla
 function agregarChofer(
 	apynom,
 	direccion,
@@ -337,6 +337,7 @@ function agregarChofer(
 	});
 }
 
+// actualizar los datos del chofer en la tabla
 function actualizarChofer(
 	apynom,
 	direccion,
@@ -400,6 +401,7 @@ function actualizarChofer(
 	});
 }
 
+// actualizar la vista
 function actualizarFila(objeto) {
 	var input = $("input[value='" + objeto.idchofer + "']");
 	if(input[1]){
@@ -412,6 +414,7 @@ function actualizarFila(objeto) {
 	}
 }
 
+// confirmación de borrado
 function confirmarBorrado(botonBorrar) {
 	var idchofer = botonBorrar.parentNode.parentNode.childNodes[6].value;
 	var trBorrar = botonBorrar.parentNode.parentNode;
@@ -427,6 +430,7 @@ function confirmarBorrado(botonBorrar) {
 	);
 }
 
+// ejecutar el borrado de la tabla del registro seleccionado. Solo de la tabla chofer, no se elimina la persona.
 function borrarChofer(idchofer, trBorrar) {
 	$.ajax({
 		type: "POST",
@@ -448,10 +452,12 @@ function borrarChofer(idchofer, trBorrar) {
 	});
 }
 
+// quitar fila de la vista
 function eliminarFila(trBorrar) {
 	$(trBorrar).remove();
 }
 
+// validar que el campo Apellido y nombre no este vacio
 function validarApynom(apynom) {
 	if (apynom == "") {
 		$("#apynom").addClass("is-invalid");
@@ -469,6 +475,8 @@ function validarApynom(apynom) {
 		return 0;
 	}
 }
+
+// validar que el campo de Nº de CUIT tenga un valor valido y que los campos asociados tengan seleccionadas las opciones correctas.
 
 function validaCuit(cuit) {
 	var cuit = cuit.toString().replace(/[-_]/g, "");
@@ -521,6 +529,7 @@ function validaCuit(cuit) {
 	}
 }
 
+// Valida que el campo cumpla con la condiciones de conformación dispuestas por AFIP
 function validarCuit(cuit) {
 	if (typeof cuit == "undefined" || cuit == "") {
 		return true;
@@ -539,6 +548,7 @@ function validarCuit(cuit) {
 	}
 }
 
+// carga el array de Cuit de choferes
 function cargarCuitChoferes() {
 	$.ajax({
 		type: "POST",
@@ -560,6 +570,7 @@ function cargarCuitChoferes() {
 	});
 }
 
+//funcion compleja: valida que en caso de que el campo tenga datos estos sean únicos, pero da la posibilidad según se solicito de cargar datos duplicados.
 function validarNumdni(numdni) {
 	if (numdni == "" || typeof numdni == "undefined") {
 		$("#numdni").removeClass("is-valid is-invalid");
@@ -690,6 +701,7 @@ function validarNumdni(numdni) {
 	return 0;
 }
 
+// carga el array de dni de choferes, para evitar la duplicidad de choferes con el mismo DNI
 function cargarDniChoferes() {
 	$.ajax({
 		type: "POST",
@@ -711,6 +723,7 @@ function cargarDniChoferes() {
 	});
 }
 
+//carga el array de dni de personas, para poder brindar la posibilidad de vincular una creacion o modificación se asocie a una persona existente.
 function cargarDniPersonas() {
 	$.ajax({
 		type: "POST",
@@ -732,6 +745,7 @@ function cargarDniPersonas() {
 	});
 }
 
+// vincula un chofer a una persona existente
 function vincularChofer(idchofer) {
 	if(idChoferActual===0){
 		$.ajax({

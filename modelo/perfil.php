@@ -104,6 +104,7 @@ class Perfil{
 			if(!is_bool($perfilid)){
 				$sql = "UPDATE perfil SET estado = ? WHERE perfilid = ?";
 				$mysqli = Conexion::abrir();
+				$mysqli->set_charset('utf8');
 				$stmt = $mysqli->prepare($sql);
 				if($stmt!==FALSE){
 					$stmt->bind_param('ii',$estado,$perfilid);
@@ -127,6 +128,7 @@ class Perfil{
 
 			$sql = "SELECT descripcion, estado FROM perfil WHERE perfilid = ?";
 			$mysqli = Conexion::abrir();
+			$mysqli->set_charset('utf8');
 			$stmt = $mysqli->prepare($sql);
 			if($stmt!==FALSE){
 				$stmt->bind_param('i',$perfilid);
@@ -153,6 +155,7 @@ class Perfil{
 			$perfilid = $_SESSION['userProfile']['perfilid'];
 			$sql = "SELECT perfilid, descripcion, estado FROM perfil WHERE estado = 0 AND perfilid >= ?";
 			$mysqli = Conexion::abrir();
+			$mysqli->set_charset('utf8');
 			$stmt = $mysqli->prepare($sql);
 			if($stmt!==FALSE){
 				$stmt->bind_param('i', $perfilid);

@@ -54,6 +54,7 @@ class PerfilPrograma{
                 return $arr;
             }else{
                 $mysqli = Conexion::abrir();
+                $mysqli->set_charset('utf8');
                 $sql = 'SELECT programaid FROM perfilprograma WHERE perfilid=?';
                 $stmt = $mysqli->prepare($sql);
                 if($stmt!==FALSE){
@@ -95,6 +96,7 @@ class PerfilPrograma{
                         }
                     }
                     $mysqli = Conexion::abrir();
+                    $mysqli->set_charset('utf8');
                     $stmt = $mysqli->prepare($sqlagregar);
                     $stmt->execute();
                     $stmt->close();
@@ -111,6 +113,7 @@ class PerfilPrograma{
                         }
                     }
                     $mysqli = Conexion::abrir();
+                    $mysqli->set_charset('utf8');
                     $stmt = $mysqli->prepare($sqlquitar);
                     $stmt->execute();
                     $stmt->close();
@@ -196,6 +199,7 @@ class PerfilPrograma{
             $perfilid = $this->getPerfilId();
             $sql = "SELECT * FROM perfilprograma, programa WHERE perfilid=? AND perfilprograma.programaid=programa.programaid AND programa.estado=0 ORDER BY ORDEN";
             $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
             if($stmt!==FALSE){
                 $stmt->bind_param("i", $perfilid);
