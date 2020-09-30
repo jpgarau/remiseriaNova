@@ -118,7 +118,6 @@ switch ($tarea) {
     case 5:
         $ochofer = new Chofer();
         $retorno = $ochofer->buscarChofer($idchofer);
-        $retorno = array('exito'=>false);
         break;
     case 6:
         $ochofer = new Chofer();
