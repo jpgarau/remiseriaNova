@@ -101,18 +101,22 @@ function errorAjax() {
 
 
 function cargarTelegram(){
-	fetch('https://api.telegram.org/bot1193011370:AAGaX5JUWguGXf74ehEnr-dqqmoM0RLYIn0/getUpdates')
-	.then((response)=>{
-		return response.json();
-	}).then((respuesta)=>{
-		$("#cmbTelegram").append('<option value=0>Sin Telegram</option>');
-		idsTelegram = [];
-		respuesta.result.forEach(objeto => {
-			if(!idsTelegram.includes(objeto.message.chat.id)){
-				$("#cmbTelegram").append('<option value='+objeto.message.chat.id+'>'+objeto.message.chat.last_name+', '+objeto.message.chat.first_name+'</option>');
-				idsTelegram.push(objeto.message.chat.id);
+	$("#cmbTelegram").append('<option value=0>Sin Telegram</option>');
+	$.ajax({
+		type: 'POST',
+		url: 'scripts/apitelegram.php',
+		data: {param:1},
+		dataType: 'json',
+		success: function(response){
+			if(response.exito){
+				if(response.encontrados>0){
+					$("#cmbTelegram").append('<option value='+response[0].telid+'>'+response[0].last_name+', '+response[0].first_name+'</option>');
+				}
 			}
-		});
+		},
+		error: function(response){
+			console.error(response);
+		} 
 	});
 }
 

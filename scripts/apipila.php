@@ -15,6 +15,7 @@ if (!isset($_POST['param'])) {
 }
 
 include_once($dir . 'modelo/pila.php');
+include_once($dir.'modelo/telegram.php');
 
 $tarea = $_POST['param'];
 if(isset($_POST['idPila'])){
@@ -26,6 +27,9 @@ if(isset($_POST['pila'])){
 if(isset($_POST['idServicio'])){
     $idServicio = $_POST['idServicio'];
 }
+if(isset($_POST['msg'])){
+    $msg = $_POST['msg'];
+}
 
 switch ($tarea) {
     case 1:
@@ -36,6 +40,10 @@ switch ($tarea) {
         $opila = new Pila();
         $opila->setIdServicio($idServicio);
         $retorno = $opila->eliminar();
+        if(isset($msg)){
+            $oTelegram = new Telegram();
+            $oTelegram->enviarTEOperadora($msg);
+        }
         break;
     case 3:
         $opila = new Pila();

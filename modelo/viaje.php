@@ -367,7 +367,6 @@ class Viaje
                 $stmt->bind_param('ii', $estado, $idViaje);
                 $stmt->execute();
                 $stmt->close();
-                $mysqli->close();
                 $octacte = new Ctacte();
                 $octacte->setIdViaje($idViaje);
                 $ctacte = $octacte->buscarViaje();
@@ -376,7 +375,17 @@ class Viaje
                     $octacte->setIdCtaCte($idCtaCte);
                     $octacte->eliminarMovimiento();
                 }
-                $arr = array('exito'=>true,'msg'=>'');
+                $sql = 'SELECT personas.telid FROM viajes LEFT JOIN servicio ON viajes.idServicio=servicio.idServicio LEFT JOIN personas on servicio.idChofer=personas.idPersonas WHERE viajes.idViaje=?';
+                $stmt2 = $mysqli->prepare($sql);
+                if($stmt2!==FALSE){
+                    $stmt2->bind_param('i', $idViaje);
+                    $stmt2->execute();
+                    $rs = $stmt2->get_result();
+                    $stmt2->close();
+                    $mysqli->close();
+                    $id = $rs->fetch_assoc();
+                    $arr = array('exito'=>true, 'msg'=>'', 'id'=>$id['telid']);
+                }
             }
         } catch (Exception $e) {
             $arr['msg'] = $e->getMessage();

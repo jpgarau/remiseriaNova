@@ -15,6 +15,7 @@ if (!isset($_POST['param'])) {
 }
 
 include_once($dir . 'modelo/viaje.php');
+include_once($dir . 'modelo/telegram.php');
 
 $tarea = $_POST['param'];
 
@@ -82,7 +83,8 @@ switch ($tarea) {
         $oviaje->setIdServicio($idServicio);
         $retorno = $oviaje->asignarViaje();
         if($retorno['id']>0){
-            enviarTE($retorno['id'], $origen);
+            $oTelegram = new Telegram();
+            $oTelegram->enviarTE($retorno['id'], $origen);
         }
         break;
     case 3:
@@ -98,14 +100,18 @@ switch ($tarea) {
         $oviaje->setImporte($importe);
         $retorno = $oviaje->agregarViaje();
         if($retorno['id']>0){
-
-            enviarTE($retorno['id'], $origen);
+            $oTelegram = new Telegram();
+            $oTelegram->enviarTE($retorno['id'], $origen);
         }
         break;
     case 4:
         $oviaje = new Viaje;
         $oviaje->setIdViaje($idViaje);
         $retorno = $oviaje->cancelarViaje();
+        if($retorno['id']>0){
+            $oTelegram = new Telegram();
+            $oTelegram->enviarTE($retorno['id'], 'Viaje Cancelado');
+        }
         break;
     case 5:
         $oviaje = new Viaje;
@@ -166,4 +172,4 @@ function enviarTE($id, $msg){
     curl_close($ch);
 }
 
-// ALTER TABLE `personas` ADD `telid` INT(12) NULL DEFAULT NULL AFTER `observa`; 
+// ALTER TABLE `personas` ADD `telid` INT(15) NULL DEFAULT NULL AFTER `observa`; 
