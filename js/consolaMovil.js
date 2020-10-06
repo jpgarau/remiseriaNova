@@ -2,6 +2,8 @@ var idServicio = 0;
 var movil = 0;
 var chofer = '';
 var locaciones = {1:'Base',2:'Toay', 3:'Santa Rosa'};
+var proximoDestino = "";
+var idViajeDestino = 0;
 $(function () {
     establecerServicio();
 
@@ -12,7 +14,16 @@ $(function () {
             noHayServicio();
         }
     });
+    $("#tomo_viaje").on("click", async function(){
+        $(this).prepend('<i class="fas fa-spinner fa-pulse fa-lg carga"></i>');
+        if( await verificarServicio()){
+            tomarViaje();
+        }else{
+            noHayServicio();
+        }
+    });
     $("#libre_base").on("click", async function(){
+        $(this).prepend('<i class="fas fa-spinner fa-pulse fa-lg carga"></i>');
         $(".btn").removeClass("active");
         $(this).addClass("active");
         if( await verificarServicio()){
@@ -22,6 +33,7 @@ $(function () {
         }
     });
     $("#libre_toay").on("click", async function(){
+        $(this).prepend('<i class="fas fa-spinner fa-pulse fa-lg carga"></i>');
         $(".btn").removeClass("active");
         $(this).addClass("active");
         if( await verificarServicio()){
@@ -31,6 +43,7 @@ $(function () {
         }
     });
     $("#libre_sRosa").on("click", async function(){
+        $(this).prepend('<i class="fas fa-spinner fa-pulse fa-lg carga"></i>');
         $(".btn").removeClass("active");
         $(this).addClass("active");
         if( await verificarServicio()){
@@ -40,6 +53,7 @@ $(function () {
         }
     });
     $("#fuera_servicio").on("click", async function(){
+        $(this).prepend('<i class="fas fa-spinner fa-pulse fa-lg carga"></i>');
         $(".btn").removeClass("active");
         $(this).addClass("active");
         if( await verificarServicio()){
@@ -49,12 +63,13 @@ $(function () {
         }
     });
     $("#resumen_turno").on("click", async function(){
+        $(this).prepend('<i class="fas fa-spinner fa-pulse fa-lg carga"></i>');
         if( await verificarServicio()){
             resumenTurno();
         }else{
             noHayServicio();
         }
-    })
+    });
 });
 
 function actualizarDestino(){
@@ -76,6 +91,8 @@ function actualizarDestino(){
                     $("#origenMovil").html("");
                     $("#origenMovil").removeClass("text-info");
                     $("#origenMovil").append(response[0].origen);
+                    proximoDestino = response[0].origen;
+                    idViajeDestino = response[0].idViaje;
                     $(".btn").removeClass("active");
                 }else{
                     $("#origenMovil").html("");
@@ -97,10 +114,11 @@ function libre(pila){
     $.ajax({
         type:"POST",
         url:"scripts/apipila.php",
-        data:{param:3, idServicio, pila},
+        data:{param:3, idServicio, pila, 'msg':chofer+': Libre en ' + locaciones[pila]},
         dataType: 'json',
         success: function(response){
             if(response.exito){
+                $("#origenMovil").html("...");
                 $('#tomo_viaje').prop('disabled', true);
                 $('#tomo_viaje i').removeClass('text-success');
                 $('#tomo_viaje i').addClass('text-white');
@@ -108,6 +126,7 @@ function libre(pila){
             }else{
                 console.error(response.msg);
             }
+            $(".carga").remove();
         },
         error: function(response){
             console.error(response);
@@ -130,6 +149,7 @@ function fueraServicio(){
             }else{
                 console.error(response.msg);
             }
+            $(".carga").remove();
         },
         error: function(response){
             console.error(response);
@@ -153,7 +173,8 @@ function resumenTurno(){
                 }
 			} else {
 				console.log(response.msg);
-			}
+            }
+            $(".carga").remove();
 		},
 		error: function (response) {
 			console.log(response);
@@ -180,6 +201,38 @@ function establecerServicio() {
             }else{
                 console.error(response.msg);
             }
+        },
+        error: function(response){
+            console.error(response);
+        }
+    });
+}
+
+function tomarViaje(){
+    $.ajax({
+        type: "POST",
+        url: 'scripts/apipila.php',
+        data: {param:2, idServicio, msg:chofer+": Viaje Tomado a "+proximoDestino, idViaje: idViajeDestino},
+        dataType: 'json',
+        success: function(response){
+            if(response.exito){
+                if(response.estado !== 3){
+                    $('#tomo_viaje').prop('disabled', true);
+                    $('#tomo_viaje i').removeClass('text-success');
+                    $('#tomo_viaje i').addClass('text-white');
+                    $("#tomo_viaje").addClass("active");
+                    alertify.success("Viaje Tomado con exito!!");
+                }else{
+                    $("#origenMovil").html("...");
+                    $('#tomo_viaje').prop('disabled', true);
+                    $('#tomo_viaje i').removeClass('text-success');
+                    $('#tomo_viaje i').addClass('text-white');
+                    alertify.error("El viaje fue rechazado por la operadora");
+                }
+            }else{
+                console.error(response.msg);
+            }
+            $(".carga").remove();
         },
         error: function(response){
             console.error(response);

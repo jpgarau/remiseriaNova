@@ -100,11 +100,12 @@ class Telegram{
         try {
             $sql = 'SELECT * FROM telegram';
             $mysqli = Conexion::abrir();
+            $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);
             if($stmt!==FALSE){
                 $stmt->execute();
                 $rs = $stmt->get_result();
-                $encontrados = $stmt->num_rows;
+                $encontrados = $rs->num_rows;
                 $stmt->close();
                 $arrTel = $rs->fetch_all(MYSQLI_ASSOC);
                 $mysqli->close();

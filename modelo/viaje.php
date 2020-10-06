@@ -450,7 +450,7 @@ class Viaje
     public function buscarDestino($idChofer){
         $arr = array('exito'=>false, 'msg'=>'Error al buscar destino');
         try {
-            $sql = 'SELECT viajes.origen FROM viajes LEFT JOIN servicio on viajes.idServicio=servicio.idServicio WHERE servicio.idChofer=? AND viajes.importe IS NULL AND viajes.estado=1 AND servicio.estado=1';
+            $sql = 'SELECT viajes.idViaje, viajes.origen FROM viajes LEFT JOIN servicio on viajes.idServicio=servicio.idServicio WHERE servicio.idChofer=? AND viajes.importe IS NULL AND viajes.estado=1 AND servicio.estado=1 AND viajes.idViaje = (SELECT MAX(idViaje) FROM viajes WHERE viajes.estado=1)';
             $mysqli = Conexion::abrir();
             $mysqli->set_charset('utf8');
             $stmt = $mysqli->prepare($sql);

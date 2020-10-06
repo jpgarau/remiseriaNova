@@ -23,7 +23,7 @@ if(isset($_SESSION['usuario'])){
             <button class="btn btn-success btn-block py-3 font-weight-bolder" id="libre_base"><i class="fas fa-place-of-worship"></i> BASE</button>
         </div>
         <div class="col mt-2">
-            <button class="btn btn-success btn-block py-3 font-weight-bolder" id="libre_toay"> <i class="fas fa-landmark"></i> TOAY</button>
+            <button class="btn btn-success btn-block py-3 font-weight-bolder" id="libre_toay"><i class="fas fa-landmark"></i> TOAY</button>
         </div>
         <div class="col mt-2">
             <button class="btn btn-success btn-block py-3 font-weight-bolder" id="libre_sRosa"><i class="fas fa-city"></i> SANTA ROSA</button>

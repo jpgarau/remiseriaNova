@@ -16,6 +16,7 @@ if (!isset($_POST['param'])) {
 
 include_once($dir . 'modelo/pila.php');
 include_once($dir.'modelo/telegram.php');
+include_once($dir.'modelo/viaje.php');
 
 $tarea = $_POST['param'];
 if(isset($_POST['idPila'])){
@@ -30,6 +31,9 @@ if(isset($_POST['idServicio'])){
 if(isset($_POST['msg'])){
     $msg = $_POST['msg'];
 }
+if(isset($_POST['idViaje'])){
+    $idViaje = $_POST['idViaje'];
+}
 
 switch ($tarea) {
     case 1:
@@ -37,12 +41,24 @@ switch ($tarea) {
         $retorno = $opila->listar();
         break;
     case 2:
-        $opila = new Pila();
-        $opila->setIdServicio($idServicio);
-        $retorno = $opila->eliminar();
-        if(isset($msg)){
-            $oTelegram = new Telegram();
-            $oTelegram->enviarTEOperadora($msg);
+        $estado = 0;
+        if(isset($idViaje)){
+            $oViaje = new Viaje();
+            $oViaje->setIdViaje($idViaje);
+            $retorno = $oViaje->buscarViaje();
+            $estado = $retorno[0]['estado'];
+        }
+        if($estado!==3){
+            $opila = new Pila();
+            $opila->setIdServicio($idServicio);
+            $retorno = $opila->eliminar();
+            $retorno['estado'] = $estado;
+            if(isset($msg)){
+                $oTelegram = new Telegram();
+                $oTelegram->enviarTEOperadora($msg);
+            }
+        }else{
+            $retorno = array('exito'=>true, 'msg'=>'Viaje Cancelado', 'estado'=>$estado);
         }
         break;
     case 3:
@@ -52,6 +68,10 @@ switch ($tarea) {
         if($retorno["exito"]){
             $opila->setPila($pila);
             $retorno = $opila->agregar();
+        }
+        if(isset($msg)){
+            $oTelegram = new Telegram();
+            $oTelegram->enviarTEOperadora($msg);
         }
         break;
     default:

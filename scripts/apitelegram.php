@@ -21,7 +21,6 @@ $tarea = $_POST['param'];
 switch ($tarea){
     case 1:
         $otelegram = new Telegram();
-        $otelegram->actualizarTabla();
         $retorno = $otelegram->listar();
         break;
     default:

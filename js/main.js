@@ -110,7 +110,9 @@ function cargarTelegram(){
 		success: function(response){
 			if(response.exito){
 				if(response.encontrados>0){
-					$("#cmbTelegram").append('<option value='+response[0].telid+'>'+response[0].last_name+', '+response[0].first_name+'</option>');
+					response[0].forEach((user)=>{
+						$("#cmbTelegram").append('<option value='+user.telid+'>'+user.last_name+', '+user.first_name+'</option>');
+					})
 				}
 			}
 		},

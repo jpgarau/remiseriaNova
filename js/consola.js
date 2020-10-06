@@ -626,7 +626,7 @@ function asignarViaje(oReserva, idServicio) {
 		success: function (response) {
 			if (response.exito) {
 				ObtenerViajes(idServicio);
-				quitarPila(idServicio);
+				// quitarPila(idServicio);
 			} else {
 				console.log(response.msg);
 			}
@@ -667,7 +667,7 @@ function nuevoViaje(
 		success: function (response) {
 			if (response.exito) {
 				ObtenerViajes(idServicio);
-				quitarPila(idServicio);
+				// quitarPila(idServicio);
 			} else {
 				console.log(response.msg);
 			}
@@ -1117,20 +1117,20 @@ function closeNav() {
 	document.body.style.backgroundColor = "white";
 }
 
-function quitarPila(idServicio) {
-	$.ajax({
-		type: "POST",
-		url: "scripts/apipila.php",
-		data: { param: 2, idServicio },
-		dataType: "json",
-		success: function (response) {
-			if (response.exito) {
-			} else {
-				console.error(response.msg);
-			}
-		},
-		error: function (response) {
-			console.error(response);
-		},
-	});
-}
+// function quitarPila(idServicio) {
+// 	$.ajax({
+// 		type: "POST",
+// 		url: "scripts/apipila.php",
+// 		data: { param: 2, idServicio },
+// 		dataType: "json",
+// 		success: function (response) {
+// 			if (response.exito) {
+// 			} else {
+// 				console.error(response.msg);
+// 			}
+// 		},
+// 		error: function (response) {
+// 			console.error(response);
+// 		},
+// 	});
+// }
