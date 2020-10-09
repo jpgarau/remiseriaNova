@@ -23,6 +23,10 @@ switch ($tarea){
         $otelegram = new Telegram();
         $retorno = $otelegram->listar();
         break;
+    case 2:
+        $otelegram = new Telegram();
+        $retorno = $otelegram->actualizarTabla();
+        break;
     default:
     break;
 }

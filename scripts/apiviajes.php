@@ -155,21 +155,3 @@ function peticion_ajax()
 {
     return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
 }
-
-
-
-function enviarTE($id, $msg){
-    $token = "1193011370:AAGaX5JUWguGXf74ehEnr-dqqmoM0RLYIn0";
-    $urlMsg = "https://api.telegram.org/bot{$token}/sendMessage";
-    
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $urlMsg);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, "chat_id={$id}&parse_mode=HTML&text=$msg");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    
-    $server_output = curl_exec($ch);
-    curl_close($ch);
-}
-
-// ALTER TABLE `personas` ADD `telid` INT(15) NULL DEFAULT NULL AFTER `observa`; 

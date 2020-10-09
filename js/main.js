@@ -4,6 +4,18 @@ $(function(){
     if($('#cmbDoc').length>0){cargarTipodoc()}
 	if($('#cmbIva').length>0){cargarCondiva()}
 	if($("#cmbTelegram").length>0) {cargarTelegram()}
+	if($("#actTelegram").length>0){
+		$("#actTelegram").on('click', function (){
+			let telid = $("#cmbTelegram").val();
+			$("#actTelegram i").addClass("fa-spin");
+			actualizarTablaTelegram().then(()=>{ 
+				cargarTelegram().then(()=>{
+					$("#actTelegram i").removeClass("fa-spin");
+					$("#cmbTelegram").val(telid);
+				});
+			});
+		});
+	}
 	if(typeof relojConsola !== 'undefined'){
 		clearInterval(relojConsola)};
 });
@@ -101,24 +113,51 @@ function errorAjax() {
 
 
 function cargarTelegram(){
-	$("#cmbTelegram").append('<option value=0>Sin Telegram</option>');
-	$.ajax({
-		type: 'POST',
-		url: 'scripts/apitelegram.php',
-		data: {param:1},
-		dataType: 'json',
-		success: function(response){
-			if(response.exito){
-				if(response.encontrados>0){
-					response[0].forEach((user)=>{
-						$("#cmbTelegram").append('<option value='+user.telid+'>'+user.last_name+', '+user.first_name+'</option>');
-					})
+	return new Promise((exito)=>{
+		$("#cmbTelegram").html('');
+		$("#cmbTelegram").append('<option value=0>Sin Telegram</option>');
+		$.ajax({
+			type: 'POST',
+			url: 'scripts/apitelegram.php',
+			data: {param:1},
+			dataType: 'json',
+			success: function(response){
+				if(response.exito){
+					if(response.encontrados>0){
+						response[0].forEach((user)=>{
+							$("#cmbTelegram").append('<option value='+user.telid+'>'+user.last_name+', '+user.first_name+'</option>');
+							exito(response.exito);
+						})
+					}
 				}
+			},
+			error: function(response){
+				console.error(response);
+				exito(false);
+			} 
+		});
+	});
+}
+
+function actualizarTablaTelegram(){
+	return new Promise((exito)=>{
+		$.ajax({
+			type: 'POST',
+			url: 'scripts/apitelegram.php',
+			data: {param:2},
+			dataType: 'json',
+			success: function(response){
+				if(response.exito){
+					exito(response.exito);
+				}
+				else{
+					exito(response.exito);
+				}
+			},
+			error: function(response){
+				exito(false);
 			}
-		},
-		error: function(response){
-			console.error(response);
-		} 
+		});
 	});
 }
 

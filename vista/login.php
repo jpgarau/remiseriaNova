@@ -2,7 +2,7 @@
 $dir = is_dir('modelo') ? "" : "../";
 include_once($dir . 'modelo/validar.php');
 include_once($dir . 'controlador/usuarioc.php');
-include_once($dir . 'modelo/telegram.php');
+
 if (isset($_POST['btnlogin'])) {
     $nuevoU = new UsuarioC();
     $respuesta = $nuevoU->verificar($_POST['usuario'], $_POST['password']);
@@ -10,8 +10,6 @@ if (isset($_POST['btnlogin'])) {
         if ($respuesta["encontrado"]) {
             $_SESSION['usuario'] = $respuesta[0]['apellido'] . ', ' . $respuesta[0]['nombre'];
             $_SESSION['userProfile'] = $respuesta[0];
-            $oTelegram = new Telegram();
-            $oTelegram->actualizarTabla();
             header('Location: /remiseria');
         } else {
             echo "<div class='alert alert-danger mb-0'>Usuario o Contraseña Incorrectos</div>";
