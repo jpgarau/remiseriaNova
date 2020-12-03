@@ -34,63 +34,65 @@ $(function () {
 		$(this).addClass("table-active");
 	});
 
-	$("#tabla_reservas tbody").on("dblclick", "tr", function () {
+	$("#tabla_reservas tbody").on("dblclick", "tr", async function () {
 		$("#tabla_reservas tbody tr").removeClass("table-active");
 		$(this).addClass("table-active");
 		let idReserva = $(this)[0].childNodes[5].childNodes[0].value;
-		cargarClientes();
-		$.ajax({
-			type: "POST",
-			url: "scripts/apireservas.php",
-			data: { param: 4, idReserva: idReserva },
-			dataType: "json",
-			success: function (response) {
-				if (response.exito) {
-					let reserva = response[0];
-					$("#modal_nueva_reserva .modal-body #fecha").val(reserva.fecha);
-					$("#modal_nueva_reserva .modal-body #hora").val(reserva.hora);
-					$("#modal_nueva_reserva .modal-body #fechaHasta").val(reserva.fecha);
-					$("#modal_nueva_reserva .modal-body #fechaHasta").prop(
-						"disabled",
-						true
-					);
-					$("#modal_nueva_reserva .modal-body #finSemana").prop({
-						checked: true,
-						disabled: true,
-					});
-					$("#modal_nueva_reserva .modal-body #origen").val(reserva.origen);
-					$("#modal_nueva_reserva .modal-body #destino").val(reserva.destino);
-					$("#modal_nueva_reserva .modal-body #observa").val(reserva.observa);
-					$("#modal_nueva_reserva .modal-body .cmbCliente").val(
-						reserva.idCliente
-					);
-					$("#modal_nueva_reserva .modal-body #idReserva").val(
-						reserva.idReserva
-					);
-					$("#modal_nueva_reserva").modal("show");
-				} else {
-					console.log(response.msg);
-				}
-			},
-			error: function (response) {
-				console.log(response);
-			},
+		await cargarClientes().then(()=>{
+			$.ajax({
+				type: "POST",
+				url: "scripts/apireservas.php",
+				data: { param: 4, idReserva: idReserva },
+				dataType: "json",
+				success: function (response) {
+					if (response.exito) {
+						let reserva = response[0];
+						$("#modal_nueva_reserva .modal-body #fecha").val(reserva.fecha);
+						$("#modal_nueva_reserva .modal-body #hora").val(reserva.hora);
+						$("#modal_nueva_reserva .modal-body #fechaHasta").val(reserva.fecha);
+						$("#modal_nueva_reserva .modal-body #fechaHasta").prop(
+							"disabled",
+							true
+						);
+						$("#modal_nueva_reserva .modal-body #finSemana").prop({
+							checked: true,
+							disabled: true,
+						});
+						$("#modal_nueva_reserva .modal-body #origen").val(reserva.origen);
+						$("#modal_nueva_reserva .modal-body #destino").val(reserva.destino);
+						$("#modal_nueva_reserva .modal-body #observa").val(reserva.observa);
+						$("#modal_nueva_reserva .modal-body .cmbCliente").val(
+							reserva.idCliente
+						);
+						$("#modal_nueva_reserva .modal-body #idReserva").val(
+							reserva.idReserva
+						);
+						$("#modal_nueva_reserva").modal("show");
+					} else {
+						console.log(response.msg);
+					}
+				},
+				error: function (response) {
+					console.log(response);
+				},
+			});
 		});
 	});
 
-	$("#btn_nueva_reserva").on("click", function () {
-		cargarClientes();
-		var hoy = getFechaHora().fecha;
-		var ahora = getFechaHora().hora.substring(0, 5);
-		$("#modal_nueva_reserva #fecha").val(hoy);
-		$("#modal_nueva_reserva #hora").val(ahora);
-		$("#modal_nueva_reserva #fechaHasta").val(hoy);
-		$("#modal_nueva_reserva #finSemana").prop("checked", true);
-		$("#modal_nueva_reserva #origen").val("");
-		$("#modal_nueva_reserva #destino").val("");
-		$("#modal_nueva_reserva #observa").val("");
-		$("#modal_nueva_reserva #idReserva").val("Agregar");
-		$("#modal_nueva_reserva").modal("show");
+	$("#btn_nueva_reserva").on("click", async function () {
+		await cargarClientes().then(()=>{
+			var hoy = getFechaHora().fecha;
+			var ahora = getFechaHora().hora.substring(0, 5);
+			$("#modal_nueva_reserva #fecha").val(hoy);
+			$("#modal_nueva_reserva #hora").val(ahora);
+			$("#modal_nueva_reserva #fechaHasta").val(hoy);
+			$("#modal_nueva_reserva #finSemana").prop("checked", true);
+			$("#modal_nueva_reserva #origen").val("");
+			$("#modal_nueva_reserva #destino").val("");
+			$("#modal_nueva_reserva #observa").val("");
+			$("#modal_nueva_reserva #idReserva").val("Agregar");
+			$("#modal_nueva_reserva").modal("show");
+		});
 	});
 
 	$("#btn_cancelar_reserva").on("click", function () {
@@ -183,41 +185,42 @@ $(function () {
 		$(this).addClass("table-active");
 	});
 
-	$("#tabla_viajes tbody").on("dblclick", "tr", function () {
+	$("#tabla_viajes tbody").on("dblclick", "tr", async function () {
 		$("#tabla_viajes tbody tr").removeClass("table-active");
 		$(this).addClass("table-active");
 		let idViaje = $(this)[0].childNodes[6].childNodes[0].value;
-		cargarClientes();
-		$.ajax({
-			type: "POST",
-			url: "scripts/apiviajes.php",
-			data: { param: 5, idViaje: idViaje },
-			dataType: "json",
-			success: function (response) {
-				if (response.exito) {
-					let viaje = response[0];
-					$("#modal_nuevo_viaje .modal-body #fecha").val(viaje.fecha);
-					$("#modal_nuevo_viaje .modal-body #hora").val(viaje.hora);
-					$("#modal_nuevo_viaje .modal-body #origen").val(viaje.origen);
-					$("#modal_nuevo_viaje .modal-body #destino").val(viaje.destino);
-					$("#modal_nuevo_viaje .modal-body #horaLibre").val(viaje.horaLibre);
-					$("#modal_nuevo_viaje .modal-body #importe").val(viaje.importe);
-					$("#modal_nuevo_viaje .modal-body #observa").val(viaje.observa);
-					$("#modal_nuevo_viaje .modal-body .cmbCliente").val(viaje.idCliente);
-					$("#modal_nuevo_viaje .modal-body #idViaje").val(viaje.idViaje);
-					$("#modal_nuevo_viaje").modal("show");
-				} else {
-					console.log(response.msg);
-				}
-			},
-			error: function (response) {
-				console.log(response);
-			},
+		await cargarClientes().then(()=>{
+			$.ajax({
+				type: "POST",
+				url: "scripts/apiviajes.php",
+				data: { param: 5, idViaje: idViaje },
+				dataType: "json",
+				success: function (response) {
+					if (response.exito) {
+						let viaje = response[0];
+						$("#modal_nuevo_viaje .modal-body #fecha").val(viaje.fecha);
+						$("#modal_nuevo_viaje .modal-body #hora").val(viaje.hora);
+						$("#modal_nuevo_viaje .modal-body #origen").val(viaje.origen);
+						$("#modal_nuevo_viaje .modal-body #destino").val(viaje.destino);
+						$("#modal_nuevo_viaje .modal-body #horaLibre").val(viaje.horaLibre);
+						$("#modal_nuevo_viaje .modal-body #importe").val(viaje.importe);
+						$("#modal_nuevo_viaje .modal-body #observa").val(viaje.observa);
+						$("#modal_nuevo_viaje .modal-body .cmbCliente").val(viaje.idCliente);
+						$("#modal_nuevo_viaje .modal-body #idViaje").val(viaje.idViaje);
+						$("#modal_nuevo_viaje").modal("show");
+					} else {
+						console.log(response.msg);
+					}
+				},
+				error: function (response) {
+					console.log(response);
+				},
+			});
 		});
 	});
 
-	$("#btn-nuevo-viaje").on("click", function () {
-		cargarClientes();
+	$("#btn-nuevo-viaje").on("click", async function () {
+	await cargarClientes().then(()=>{
 		var hoy = getFechaHora().fecha;
 		var ahora = getFechaHora().hora.substring(0, 5);
 		$("#modal_nuevo_viaje #fecha").val(hoy);
@@ -229,6 +232,7 @@ $(function () {
 		$("#modal_nuevo_viaje #importe").val("");
 		$("#modal_nuevo_viaje #idViaje").val("Agregar");
 		$("#modal_nuevo_viaje").modal("show");
+	});
 	});
 
 	$("#modal_nuevo_viaje #btn-guardar-viaje").on("click", function () {
@@ -778,21 +782,26 @@ function imprimirInforme() {
 //FUNCIONES GENERALES
 
 function cargarClientes() {
-	$.ajax({
-		type: "POST",
-		url: "scripts/apiclientes.php",
-		data: { param: 1 },
-		dataType: "json",
-		success: function (response) {
-			if (response.exito) {
-				llenarSelectClientes(response[0]);
-			} else {
-				console.log(response.msg);
-			}
-		},
-		error: function (response) {
-			console.log(response);
-		},
+	return new Promise((exito)=>{
+		$.ajax({
+			type: "POST",
+			url: "scripts/apiclientes.php",
+			data: { param: 1 },
+			dataType: "json",
+			success: function (response) {
+				if (response.exito) {
+					llenarSelectClientes(response[0]);
+					exito(response.exito);
+				} else {
+					console.log(response.msg);
+					exito(response.exito)
+				}
+			},
+			error: function (response) {
+				console.log(response);
+				exito(false);
+			},
+		});
 	});
 }
 
@@ -1116,21 +1125,3 @@ function closeNav() {
 	document.getElementById("mySidenav").style.height = "0";
 	document.body.style.backgroundColor = "white";
 }
-
-// function quitarPila(idServicio) {
-// 	$.ajax({
-// 		type: "POST",
-// 		url: "scripts/apipila.php",
-// 		data: { param: 2, idServicio },
-// 		dataType: "json",
-// 		success: function (response) {
-// 			if (response.exito) {
-// 			} else {
-// 				console.error(response.msg);
-// 			}
-// 		},
-// 		error: function (response) {
-// 			console.error(response);
-// 		},
-// 	});
-// }

@@ -22,120 +22,77 @@ $(function(){
 
 // Localidades
 function cargarLocalidad(){
-	$.ajax({
-		url:'ajax/localidades.php',
-		type: 'GET',
-		datatype: 'JSON',
-		data: ({}),
-		success: insertarLocalidad,
-		error:errorAjax
-	})
-}
-
-function insertarLocalidad(respuesta,e,ce){
-	var listaLocalidades=$("#idlocalidad");
-	
-	if(ce.status != 200){
-		errorAjax();
-	}
-
-	var respuesta = JSON.parse(respuesta);
-    listaLocalidades.html('');
-	
-	for(i=0;i<respuesta.length;i++){
-        var localidad = $("<option>");
-        localidad.val(respuesta[i].idlocalidad);
-		localidad.text(respuesta[i].localidad);
-        listaLocalidades.append(localidad);
-    }
-}
+	var request = new Request('ajax/localidades.php');
+	fetch(request).then((response) => response.json()).then((localidades) => {
+		var selectLocalidad = document.getElementById('idlocalidad');
+		selectLocalidad.html = "";
+		localidades.forEach(localidad => {
+		  var opLocalidad = document.createElement("option");
+		  opLocalidad.value = localidad.idlocalidad;
+		  opLocalidad.text = localidad.localidad;
+		  selectLocalidad.appendChild(opLocalidad);
+		});
+	  });
+  }
 
 //Tipos Documentos
 function cargarTipodoc(){
-	$.ajax({
-		url:'ajax/tiposDoc.php',
-		type: 'GET',
-		datatype: 'JSON',
-		data: ({}),
-		success: insertarTipodoc,
-		error:errorAjax
-	})
-}
-
-function insertarTipodoc(respuesta,e,ce){
-	if(ce.status!= 200){
-		errorAjax();
-	}
-	var listaTipodoc=$("#cmbDoc");
-	
-    var respuesta = JSON.parse(respuesta);
-	listaTipodoc.html('');
-	for(i=0;i<respuesta.length;i++){
-        var tipodoc = $("<option>");
-        tipodoc.val(respuesta[i].idTipoDoc);
-		tipodoc.html(respuesta[i].descripcion);
-        listaTipodoc.append(tipodoc);
-    }
+	var request = new Request('ajax/tiposDoc.php');
+	fetch(request).then((response) => response.json()).then((tiposDoc) => {
+		var tipoDoc = document.getElementById('cmbDoc');
+		tipoDoc.html = "";
+		tiposDoc.forEach(tDoc => {
+		  var opTipoDoc = document.createElement("option");
+		  opTipoDoc.value = tDoc.idTipoDoc;
+		  opTipoDoc.text = tDoc.descripcion;
+		  tipoDoc.appendChild(opTipoDoc);
+		});
+	  });
 }
 
 // Condiciones de Iva
-
 function cargarCondiva(){
-	$.ajax({
-		url:'ajax/condIvas.php',
-		type: 'GET',
-		datatype: 'JSON',
-		data: ({}),
-		success: insertarCondiva,
-		error:errorAjax
-	})
+	var request = new Request('ajax/condIvas.php');
+	fetch(request).then((response) => response.json()).then((condIvas) => {
+		var selectCmbIva = document.getElementById('cmbIva');
+		selectCmbIva.html = "";
+		condIvas.forEach(condIva => {
+		  var opCondIva = document.createElement("option");
+		  opCondIva.value = condIva.idcondiva;
+		  opCondIva.text = condIva.desccondiva;
+		  selectCmbIva.appendChild(opCondIva);
+		});
+	  });
 }
-
-function insertarCondiva(respuesta,e,ce){
-	var listaCondiva=$("#cmbIva");
-	if(ce.status != 200){
-		errorAjax();
-	}
-
-    var respuesta = JSON.parse(respuesta);
-	listaCondiva.html("");
-	for(i=0;i<respuesta.length;i++){
-		var condiva = $("<option>");
-		condiva.val(respuesta[i].idcondiva);
-		condiva.html(respuesta[i].desccondiva);
-        listaCondiva.append(condiva);
-    }
-}
-
-function errorAjax() {
-	console.log("Hubo un error en el Ajax");
-}
-
 
 function cargarTelegram(){
 	return new Promise((exito)=>{
-		$("#cmbTelegram").html('');
-		$("#cmbTelegram").append('<option value=0>Sin Telegram</option>');
-		$.ajax({
-			type: 'POST',
-			url: 'scripts/apitelegram.php',
-			data: {param:1},
-			dataType: 'json',
-			success: function(response){
-				if(response.exito){
-					if(response.encontrados>0){
-						response[0].forEach((user)=>{
-							$("#cmbTelegram").append('<option value='+user.telid+'>'+user.last_name+', '+user.first_name+'</option>');
-							exito(response.exito);
-						})
-					}
-				}
-			},
-			error: function(response){
-				console.error(response);
-				exito(false);
-			} 
-		});
+    let cmbTelegram = document.getElementById("cmbTelegram");
+    cmbTelegram.html = '';
+    let opTelegram = document.createElement("option");
+    opTelegram.value = 0;
+    opTelegram.text = "Sin Telegram";
+    cmbTelegram.appendChild(opTelegram);
+    let datos = new FormData();
+    datos.append("param",1);
+    let request = new Request('scripts/apitelegram.php',{ method:'POST', body: datos});
+    fetch(request).then((response)=>response.json()).then((respuesta)=>{
+      if(respuesta.exito){
+        let arrTelegrams = respuesta[0];
+        if(arrTelegrams.length > 0){
+          	arrTelegrams.forEach(telegram => {
+				let opTelegram = document.createElement("option");
+				opTelegram.value = telegram.telid;
+				opTelegram.text = telegram.last_name + ", "+ telegram.first_name;
+				cmbTelegram.appendChild(opTelegram);
+		  	});
+			exito(respuesta.exito);
+        }
+      }else{
+		console.error(respuesta.msg);
+		exito(respuesta.exito);
+      }
+	});
 	});
 }
 
@@ -151,10 +108,12 @@ function actualizarTablaTelegram(){
 					exito(response.exito);
 				}
 				else{
+					console.error(response.msg);
 					exito(response.exito);
 				}
 			},
 			error: function(response){
+				console.error(response);
 				exito(false);
 			}
 		});

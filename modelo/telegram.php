@@ -7,7 +7,7 @@ class Telegram{
     private $telid;
     private $last_name;
     private $firts_name;
-    private $idOperadora = 378480256;
+    private $idOperadora = 378480256 ;
     private $token = '1193011370:AAGaX5JUWguGXf74ehEnr-dqqmoM0RLYIn0';
     private $website = 'https://api.telegram.org/bot';
 
