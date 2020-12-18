@@ -7,8 +7,8 @@ class Telegram{
     private $telid;
     private $last_name;
     private $firts_name;
-    private $idOperadora = 378480256 ;
-    private $token = '1193011370:AAGaX5JUWguGXf74ehEnr-dqqmoM0RLYIn0';
+    private $idOperadora = 0 ;
+    private $token = '';
     private $website = 'https://api.telegram.org/bot';
 
     public function __construct()
@@ -32,88 +32,96 @@ class Telegram{
 
     public function actualizarTabla(){
         $arr = array('exito'=>false, 'msg'=>'Error al actualizar la tabla');
-        try {
-            $existentes = $this->listar()[0];
-            $url = $this->website.$this->token;
-            $update = file_get_contents($url.'/getUpdates');
-            $update = json_decode($update, TRUE);
-            $result = $update['result'];
-            $arrNuevos = array();
-            $sql = 'INSERT INTO telegram (telid, last_name, first_name) VALUES ';
-            if(count($result)>0){
-                foreach ($result as $mensaje) {
-                    $chatid = $mensaje['message']['chat']['id'];
-                    $last_name = $mensaje['message']['chat']['last_name'];
-                    $first_name = $mensaje['message']['chat']['first_name'];
-                    if(!in_array($chatid,array_column($arrNuevos, 'id'))){
-                        $agregar = array('id'=>$chatid,'last_name'=>$last_name,'first_name'=>$first_name);
-                        array_push($arrNuevos,$agregar);
+        if($this->token !== ""){
+            try {
+                $existentes = $this->listar()[0];
+                $url = $this->website.$this->token;
+                $update = file_get_contents($url.'/getUpdates');
+                $update = json_decode($update, TRUE);
+                $result = $update['result'];
+                $arrNuevos = array();
+                $sql = 'INSERT INTO telegram (telid, last_name, first_name) VALUES ';
+                if(count($result)>0){
+                    foreach ($result as $mensaje) {
+                        $chatid = $mensaje['message']['chat']['id'];
+                        $last_name = $mensaje['message']['chat']['last_name'];
+                        $first_name = $mensaje['message']['chat']['first_name'];
+                        if(!in_array($chatid,array_column($arrNuevos, 'id'))){
+                            $agregar = array('id'=>$chatid,'last_name'=>$last_name,'first_name'=>$first_name);
+                            array_push($arrNuevos,$agregar);
+                        }
                     }
-                }
-                if(count($arrNuevos)>0){
-                    foreach ($arrNuevos as $nuevoTUser) {
-                        $chatid = $nuevoTUser['id'];
-                        $last_name = $nuevoTUser['last_name'];
-                        $first_name = $nuevoTUser['first_name'];
-                        $contador = 0;
-                        if(!in_array($chatid, array_column($existentes, 'telid'))){
-                            if($contador > 0){
-                                $sql .= ',';
+                    if(count($arrNuevos)>0){
+                        foreach ($arrNuevos as $nuevoTUser) {
+                            $chatid = $nuevoTUser['id'];
+                            $last_name = $nuevoTUser['last_name'];
+                            $first_name = $nuevoTUser['first_name'];
+                            $contador = 0;
+                            if(!in_array($chatid, array_column($existentes, 'telid'))){
+                                if($contador > 0){
+                                    $sql .= ',';
+                                }
+                                $sql .= '('.$chatid.',"'.$last_name.'","'.$first_name.'") ';
+                                $contador ++;
                             }
-                            $sql .= '('.$chatid.',"'.$last_name.'","'.$first_name.'") ';
-                            $contador ++;
                         }
-                    }
-                    if($contador > 0){
-                        echo $sql;
-                        $mysqli = Conexion::abrir();
-                        $stmt = $mysqli->prepare($sql);
-                        if($stmt!==FALSE){
-                            $stmt->execute();
-                            $stmt->close();
-                            $mysqli->close();
+                        if($contador > 0){
+                            echo $sql;
+                            $mysqli = Conexion::abrir();
+                            $stmt = $mysqli->prepare($sql);
+                            if($stmt!==FALSE){
+                                $stmt->execute();
+                                $stmt->close();
+                                $mysqli->close();
+                            }
                         }
                     }
                 }
+                $arr = array('exito'=>true, 'msg'=>'');
+            } catch (Exception $e) {
+                $arr['msg'] = $e->getMessage();
             }
-            $arr = array('exito'=>true, 'msg'=>'');
-        } catch (Exception $e) {
-            $arr['msg'] = $e->getMessage();
         }
         return $arr;
     }
 
     public function enviarTE($chatid, $msg){
-        $url = $this->website.$this->token.'/sendMessage';
-        $url .= '?chat_id='.$chatid.'&parse_mode=HTML&text='.urlencode($msg);
-        file_get_contents($url);
+        if($this->token !== ""){
+            $url = $this->website.$this->token.'/sendMessage';
+            $url .= '?chat_id='.$chatid.'&parse_mode=HTML&text='.urlencode($msg);
+            file_get_contents($url);
+        }
     }
     
     public function enviarTEOperadora($msg){
+        if($this->token !== ""){
         $url = $this->website.$this->token.'/sendMessage';
         $url .= '?chat_id='.$this->idOperadora.'&parse_mode=HTML&text='.urlencode($msg);
         file_get_contents($url);
+        }
     }
 
     public function listar(){
         $arr = array('exito'=>false, 'msg'=>'Error al listar');
-        try {
-            $sql = 'SELECT * FROM telegram';
-            $mysqli = Conexion::abrir();
-            $mysqli->set_charset('utf8');
-            $stmt = $mysqli->prepare($sql);
-            if($stmt!==FALSE){
-                $stmt->execute();
-                $rs = $stmt->get_result();
-                $encontrados = $rs->num_rows;
-                $stmt->close();
-                $arrTel = $rs->fetch_all(MYSQLI_ASSOC);
-                $mysqli->close();
-                $arr = array('exito'=>true, 'msg'=>'','encontrados'=>$encontrados, $arrTel);
+        if($this->token !== ""){
+            try {
+                $sql = 'SELECT * FROM telegram';
+                $mysqli = Conexion::abrir();
+                $mysqli->set_charset('utf8');
+                $stmt = $mysqli->prepare($sql);
+                if($stmt!==FALSE){
+                    $stmt->execute();
+                    $rs = $stmt->get_result();
+                    $encontrados = $rs->num_rows;
+                    $stmt->close();
+                    $arrTel = $rs->fetch_all(MYSQLI_ASSOC);
+                    $mysqli->close();
+                    $arr = array('exito'=>true, 'msg'=>'','encontrados'=>$encontrados, $arrTel);
+                }
+                
+            } catch (Exception $e) {
+                $arr['msg'] = $e->getMessage();
             }
-            
-        } catch (Exception $e) {
-            $arr['msg'] = $e->getMessage();
         }
         return $arr;
     }
