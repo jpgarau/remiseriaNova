@@ -23,3 +23,4 @@ For a description of the Bot API, see this page: https://core.telegram.org/bots/
 1. El sistema registra cada usuario que interacture con el bot de y guardara su ID
 2. Cada ID debera ser asignado a cada chofer de la empresa
 3. Una vez registrado el sistema podrá enviar mensajes a cada chofer asignandole el viaje correspondiente según la descripción provista por la operadora.
+4. Si el chofer da Libre, alguna de las zonas asignadas o Pone la aplicación en modo fuera de Servicio, esto genera un aviso por telegram a la Operadora.
