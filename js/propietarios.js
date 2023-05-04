@@ -44,7 +44,7 @@ $(document).ready(function () {
 		}
 
 	});
-	
+
 	$("#cuit").on("input", function(){
 		validaCuit($(this).val());
 	});

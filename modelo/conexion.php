@@ -11,4 +11,3 @@ class Conexion{
 		return $mysqli;
 	}
 }
-?>

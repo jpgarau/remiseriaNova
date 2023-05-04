@@ -139,7 +139,11 @@ function generarInformePDF(servicios, vehiculo){
 		}
 		linea+=5;
 	});
-
+    
+    if(linea>270){
+        informe.addPage();
+        linea=10;
+    }
 	recaudado = total-ctaCte,
 	informe.roundedRect(140,linea,60,17,1,1);
 	linea+=5;
